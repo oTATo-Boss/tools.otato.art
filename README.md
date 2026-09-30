@@ -6,7 +6,7 @@ RunningHub API workflow console.
 
 - RunningHub AI App execution
 - Dynamic node parameter mapping
-- Local file upload through Vercel Functions
+- Media upload and proxy routes through Cloudflare Pages Functions
 - Automatic task polling every 3 seconds
 - Image / video / audio / text result preview
 - API Key stored only in browser localStorage
@@ -16,6 +16,15 @@ RunningHub API workflow console.
 
 This repository is the canonical source for RH Studio.
 
-Connect the `main` branch to Vercel. After that, every push to `main` can trigger the production deployment automatically.
+Production is deployed on Cloudflare Pages from the `main` branch.
+
+- Build command: `npm run build`
+- Build output directory: `dist`
+- Pages Functions: the project-root `functions/` directory
+- Shared RunningHub request handlers: `api/rh/`
+
+The build copies the frontend assets into `dist`. Pages Functions provide the RunningHub API routes, streaming upload, media proxies, and `/healthz`; Pages serves `/history` using its built-in extensionless HTML routing.
+
+For local development, run `npm start` to use `server.js`.
 
 No RunningHub API Key is committed to the repository.
