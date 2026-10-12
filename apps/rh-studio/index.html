@@ -1,0 +1,1387 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>RH Studio</title>
+<meta name="description" content="RunningHub multi-app AI workspace" />
+<link rel="stylesheet" href="./style.css?v=unified-media-preview-2">
+
+<style id="prompt-settings-feature-styles">
+.prompt-head-actions{align-self:center;display:flex;align-items:center;gap:8px}
+.prompt-head-actions>b{color:#82786e;font:800 8px ui-monospace,SFMono-Regular,Menlo,monospace}
+.prompt-quick-btn{
+  height:30px;border:1px solid rgba(255,179,92,.20);border-radius:10px;
+  background:rgba(255,179,92,.055);color:#d8b083;padding:0 9px 0 10px;
+  display:flex;align-items:center;gap:7px;cursor:pointer;font-size:7.5px;transition:.16s
+}
+.prompt-quick-btn:hover{border-color:rgba(255,179,92,.34);background:rgba(255,179,92,.10);transform:translateY(-1px)}
+.prompt-quick-btn i{font-style:normal;color:var(--accent);font-size:9px}
+.prompt-settings-drawer{width:min(760px,calc(100vw - 32px));display:flex;flex-direction:column;overflow:hidden}
+.prompt-settings-drawer .drawer-section{flex:1 1 auto;min-height:0;display:flex;flex-direction:column;border-bottom:0;padding-bottom:6px}
+.prompt-template-note{
+  margin:0 0 12px;padding:10px 11px;border:1px solid var(--line);border-radius:13px;
+  background:rgba(255,255,255,.018);color:#746b62;font-size:7.5px;line-height:1.6
+}
+.prompt-template-note code{color:#d6ad7c;font:800 7.5px ui-monospace,SFMono-Regular,Menlo,monospace}
+.prompt-template-editor{
+  flex:1 1 auto;min-height:420px;width:100%;resize:none;border:1px solid var(--line);
+  outline:none;border-radius:16px;background:rgba(0,0,0,.28);color:#eee8df;
+  padding:15px 16px;font-size:10px;line-height:1.72
+}
+.prompt-template-editor:focus{border-color:rgba(255,179,92,.30);box-shadow:0 0 0 4px rgba(255,179,92,.03)}
+.prompt-template-foot{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-top:10px;min-height:38px}
+.prompt-template-meta{display:flex;align-items:center;gap:10px;min-width:0}
+.prompt-template-save-state{color:#756c63;font-size:7px;white-space:nowrap}
+.prompt-variable-state{
+  min-width:0;height:30px;padding:0 10px;border:1px solid var(--line);border-radius:10px;
+  background:rgba(255,255,255,.018);display:flex;align-items:center;gap:7px;color:#81776d;font-size:7px
+}
+.prompt-variable-dot{width:6px;height:6px;border-radius:50%;background:#756c63;flex:0 0 auto}
+.prompt-variable-dot.ok{background:var(--good);box-shadow:0 0 12px rgba(215,197,158,.30)}
+.prompt-variable-dot.warn{background:var(--bad);box-shadow:0 0 12px rgba(239,136,126,.24)}
+.prompt-template-count{color:#665e56;font:800 7px ui-monospace,SFMono-Regular,Menlo,monospace;white-space:nowrap}
+.clothes-generator-card{
+  margin:0 0 12px;padding:11px;border:1px solid var(--line);border-radius:14px;
+  background:rgba(255,255,255,.018)
+}
+.clothes-generator-head{display:flex;align-items:flex-start;justify-content:space-between;gap:12px}
+.clothes-generator-head strong{display:block;font-size:9px;color:#bdb3a9}
+.clothes-generator-head span{display:block;margin-top:4px;color:#665e56;font-size:7px;line-height:1.5}
+.clothes-generator-head b{
+  flex:0 0 auto;border:1px solid rgba(255,179,92,.16);border-radius:999px;
+  padding:5px 8px;color:#c09668;background:rgba(255,179,92,.04);
+  font:800 6px ui-monospace,SFMono-Regular,Menlo,monospace;letter-spacing:.75px
+}
+.clothes-seed-row{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:8px;margin-top:10px}
+.clothes-seed-row .input{height:36px}
+.clothes-seed-use{height:36px;white-space:nowrap}
+.clothes-last-result{
+  margin-top:9px;padding:9px 10px;border:1px solid rgba(255,255,255,.045);border-radius:11px;
+  background:rgba(0,0,0,.18);display:grid;grid-template-columns:auto 1fr;gap:9px;align-items:start
+}
+.clothes-last-result>span{
+  color:#5f5750;font:800 6px ui-monospace,SFMono-Regular,Menlo,monospace;letter-spacing:.7px;
+  padding-top:2px
+}
+.clothes-last-result>div{min-width:0}
+.clothes-last-result strong{
+  display:block;color:#a69c92;font-size:7.5px;line-height:1.55;font-weight:600;
+  white-space:normal;overflow-wrap:anywhere
+}
+.clothes-last-result small{
+  display:block;margin-top:5px;color:#665d55;font:700 6px ui-monospace,SFMono-Regular,Menlo,monospace
+}
+@media(max-width:620px){
+  .prompt-quick-btn{width:30px;padding:0;justify-content:center}
+  .prompt-quick-btn span{display:none}
+  .prompt-settings-drawer{right:8px;top:8px;bottom:8px;width:calc(100vw - 16px)}
+  .prompt-template-editor{min-height:360px}
+  .prompt-template-foot{align-items:flex-start;flex-direction:column}
+  .prompt-template-meta{width:100%;justify-content:space-between}
+}
+
+.material-head-actions{display:flex;align-items:center;gap:8px}
+.material-head-actions>b{color:#6f675f;font:800 6.5px ui-monospace,SFMono-Regular,Menlo,monospace;letter-spacing:.55px;white-space:nowrap}
+.material-quick-btn{
+  height:30px;border:1px solid rgba(255,179,92,.20);border-radius:10px;
+  background:rgba(255,179,92,.055);color:#d8b083;padding:0 9px 0 10px;
+  display:flex;align-items:center;gap:7px;cursor:pointer;font-size:7.5px;transition:.16s
+}
+.material-quick-btn:hover{border-color:rgba(255,179,92,.34);background:rgba(255,179,92,.10);transform:translateY(-1px)}
+.material-quick-btn i{font-style:normal;color:var(--accent);font-size:9px}
+.material-settings-drawer{width:min(860px,calc(100vw - 32px));display:flex;flex-direction:column;overflow:hidden}
+.material-settings-drawer .drawer-section{flex:1 1 auto;min-height:0;display:flex;flex-direction:column;border-bottom:0}
+.material-library-note{
+  margin:0 0 12px;padding:10px 11px;border:1px solid var(--line);border-radius:13px;
+  background:rgba(255,255,255,.018);color:#746b62;font-size:7.5px;line-height:1.6
+}
+.material-library-note strong{color:#bca27f;font-weight:800}
+.material-library-grid{
+  flex:1 1 auto;min-height:0;overflow:auto;padding-right:4px;
+  display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;align-content:start
+}
+.material-card{
+  min-width:0;border:1px solid var(--line);border-radius:16px;background:rgba(0,0,0,.18);
+  padding:10px;display:grid;grid-template-columns:96px minmax(0,1fr);gap:11px;align-items:center
+}
+.material-card.has-file{border-color:rgba(255,179,92,.15);background:rgba(255,179,92,.025)}
+.material-card-preview{
+  width:96px;height:72px;border-radius:12px;border:1px solid rgba(255,255,255,.05);
+  background:#080808;display:flex;align-items:center;justify-content:center;overflow:hidden;
+  color:#675f57;position:relative
+}
+.material-card-preview img,.material-card-preview video{width:100%;height:100%;object-fit:cover;display:block}
+.material-card-preview .material-kind-icon{
+  font:800 10px ui-monospace,SFMono-Regular,Menlo,monospace;letter-spacing:1px;color:#7d7267
+}
+.material-card-preview .material-kind-icon.audio{font-size:20px;color:#a78967}
+.material-card-body{min-width:0}
+.material-card-copy{display:flex;align-items:flex-start;justify-content:space-between;gap:10px}
+.material-card-copy strong{display:block;color:#c8beb4;font-size:9px;white-space:nowrap}
+.material-card-copy b{
+  flex:0 0 auto;padding:4px 6px;border:1px solid var(--line);border-radius:999px;
+  color:#6e655d;font:800 5.8px ui-monospace,SFMono-Regular,Menlo,monospace;letter-spacing:.65px
+}
+.material-card.has-file .material-card-copy b{color:#bc966d;border-color:rgba(255,179,92,.15);background:rgba(255,179,92,.035)}
+.material-card-meta{display:block;margin-top:5px;color:#625a52;font-size:6.6px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.material-card-actions{display:flex;align-items:center;gap:7px;margin-top:10px}
+.material-card-actions button{
+  height:29px;border-radius:9px;padding:0 9px;cursor:pointer;font-size:6.8px;transition:.15s
+}
+.material-upload-btn{border:1px solid rgba(255,179,92,.17);background:rgba(255,179,92,.045);color:#c79d70}
+.material-upload-btn:hover{background:rgba(255,179,92,.09);border-color:rgba(255,179,92,.29)}
+.material-delete-btn{border:1px solid var(--line);background:rgba(255,255,255,.018);color:#756b63}
+.material-delete-btn:hover{border-color:rgba(239,136,126,.19);color:#bd7e77;background:rgba(239,136,126,.035)}
+.material-delete-btn:disabled{opacity:.32;cursor:default}
+@media(max-width:760px){
+  .material-library-grid{grid-template-columns:1fr}
+  .material-settings-drawer{right:8px;top:8px;bottom:8px;width:calc(100vw - 16px)}
+}
+
+.batch-operation-foot{
+  display:grid;
+  grid-template-columns:minmax(0,1fr) 118px;
+  gap:8px;
+}
+.batch-operation-foot .generate-btn{width:100%}
+.batch-open-btn{
+  height:41px;border:1px solid rgba(255,179,92,.22);border-radius:12px;
+  background:rgba(255,179,92,.045);color:#caa173;
+  padding:0 11px;display:flex;align-items:center;justify-content:space-between;
+  gap:8px;cursor:pointer;font-size:8px;font-weight:720;transition:.17s
+}
+.batch-open-btn:hover:not(:disabled){
+  border-color:rgba(255,179,92,.34);background:rgba(255,179,92,.085);transform:translateY(-1px)
+}
+.batch-open-btn b{color:var(--accent);font-size:12px}
+.batch-open-btn.is-running{
+  border-color:rgba(255,179,92,.38);background:rgba(255,179,92,.10);color:#dfba8e
+}
+.batch-open-btn:disabled{opacity:.38;cursor:not-allowed;transform:none}
+@media(max-width:620px){
+  .batch-operation-foot{grid-template-columns:minmax(0,1fr) 104px}
+}
+.auto-generation-drawer{width:min(620px,calc(100vw - 32px));display:flex;flex-direction:column;overflow:auto}
+.auto-generation-note{
+  margin:0 0 14px;padding:11px 12px;border:1px solid var(--line);border-radius:14px;
+  background:rgba(255,255,255,.018);color:#746b62;font-size:7.5px;line-height:1.65
+}
+.auto-generation-note strong{color:#c09d75}
+.auto-generation-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.auto-generation-field>span{
+  display:block;margin:0 0 6px 2px;color:#776f66;font-size:7px
+}
+.auto-generation-field input,.auto-generation-field select{
+  width:100%;height:40px;border:1px solid var(--line);border-radius:12px;
+  background:rgba(0,0,0,.24);color:#ded7ce;padding:0 11px;outline:none
+}
+.auto-generation-summary{
+  margin-top:12px;padding:11px 12px;border:1px solid var(--line);border-radius:14px;
+  background:rgba(0,0,0,.18);display:grid;gap:7px
+}
+.auto-generation-summary>div{display:flex;align-items:center;justify-content:space-between;gap:12px}
+.auto-generation-summary span{color:#6c645c;font-size:7px}
+.auto-generation-summary strong{color:#bdb3a9;font-size:8px;font-weight:650;text-align:right}
+.auto-generation-progress{
+  margin-top:12px;padding:12px;border:1px solid var(--line);border-radius:14px;background:rgba(255,255,255,.018)
+}
+.auto-generation-progress-head{display:flex;align-items:center;justify-content:space-between;gap:12px}
+.auto-generation-progress-head strong{font-size:9px;color:#bcb2a8}
+.auto-generation-progress-head span{color:#746b62;font:800 6.5px ui-monospace,SFMono-Regular,Menlo,monospace}
+.auto-generation-track{height:5px;margin-top:10px;border-radius:999px;background:rgba(255,255,255,.06);overflow:hidden}
+.auto-generation-track i{display:block;width:0;height:100%;background:var(--accent);border-radius:999px;transition:width .2s ease}
+.auto-generation-progress small{display:block;margin-top:8px;color:#625a52;font-size:7px;line-height:1.5}
+.auto-generation-actions{
+  display:grid;grid-template-columns:minmax(0,1fr) 152px 94px;gap:9px;margin-top:14px
+}
+.auto-generation-actions .generate-btn{height:44px}
+.auto-batch-download-btn{
+  height:44px;border:1px solid rgba(255,179,92,.22);border-radius:14px;
+  background:rgba(255,179,92,.045);color:#cda676;padding:0 11px;
+  display:flex;align-items:center;justify-content:space-between;gap:8px;
+  cursor:pointer;font-size:8px;font-weight:720;transition:.17s
+}
+.auto-batch-download-btn b{color:var(--accent);font-size:12px}
+.auto-batch-download-btn:hover:not(:disabled){
+  border-color:rgba(255,179,92,.34);background:rgba(255,179,92,.085);transform:translateY(-1px)
+}
+.auto-batch-download-btn:disabled{opacity:.28;cursor:not-allowed;transform:none}
+.auto-stop-btn{
+  min-width:94px;height:44px;border:1px solid var(--line2);border-radius:14px;
+  background:rgba(255,255,255,.025);color:#9d9288;cursor:pointer;font-size:8px
+}
+.auto-stop-btn:disabled{opacity:.3;cursor:not-allowed}
+@media(max-width:620px){
+  .auto-generation-grid{grid-template-columns:1fr}
+  .auto-generation-drawer{right:8px;top:8px;bottom:8px;width:calc(100vw - 16px)}
+  .auto-generation-actions{grid-template-columns:1fr}
+  .auto-batch-download-btn,.auto-stop-btn{width:100%}
+}
+
+@media(max-width:620px){
+  .material-quick-btn{width:30px;padding:0;justify-content:center}
+  .material-quick-btn span{display:none}
+  .material-card{grid-template-columns:82px minmax(0,1fr)}
+  .material-card-preview{width:82px;height:64px}
+}
+
+</style>
+<link rel="stylesheet" href="./graphite-console.css?v=graphite-console-1">
+</head>
+<body>
+<div class="ambient ambient-a"></div>
+<div class="ambient ambient-b"></div>
+<div class="noise"></div>
+
+<div class="shell">
+  <aside class="sidebar glass">
+    <div>
+      <div class="brand">
+        <div class="mark">RH</div>
+        <div class="brand-copy"><strong>RH Studio</strong><small>RUNNINGHUB WORKSPACE</small></div>
+      </div>
+
+      <div class="section-label">应用</div>
+      <div class="app-filter" role="group" aria-label="应用类型筛选">
+        <button class="app-filter-btn active" data-app-filter="all" type="button" aria-pressed="true">
+          <span>全部</span><b id="appFilterCountAll">7</b>
+        </button>
+        <button class="app-filter-btn" data-app-filter="image" type="button" aria-pressed="false">
+          <span>图片</span><b id="appFilterCountImage">5</b>
+        </button>
+        <button class="app-filter-btn" data-app-filter="video" type="button" aria-pressed="false">
+          <span>视频</span><b id="appFilterCountVideo">2</b>
+        </button>
+        <button class="app-filter-btn" data-app-filter="text" type="button" aria-pressed="false">
+          <span>文字</span><b id="appFilterCountText">0</b>
+        </button>
+      </div>
+      <div class="app-list">
+        <button class="app-item active" data-app="minimax-h3" type="button">
+          <div class="app-icon">M3</div>
+          <div class="app-copy">
+            <strong>MinimaxH3多参生视频</strong>
+            <span>量化加速 V3版</span>
+          </div>
+          <i class="active-dot"></i>
+        </button>
+
+        <button class="app-item" data-app="image-2mp" type="button">
+          <div class="app-icon">IMG</div>
+          <div class="app-copy">
+            <strong>超强文生图V3.0 基础版</strong>
+            <span>纯文本生成</span>
+          </div>
+          <i class="active-dot"></i>
+        </button>
+
+        <button class="app-item" data-app="krea2-white-marble" type="button">
+          <div class="app-icon">WM</div>
+          <div class="app-copy">
+            <strong>Krea2 turbo White_Marble-AIO</strong>
+            <span>Portrait Master</span>
+          </div>
+          <i class="active-dot"></i>
+        </button>
+
+        <button class="app-item" data-app="kq12-portrait" type="button">
+          <div class="app-icon">KQ</div>
+          <div class="app-copy">
+            <strong>KQ12Z真实人像-超绝美感文生图</strong>
+            <span>Prompt Only</span>
+          </div>
+          <i class="active-dot"></i>
+        </button>
+
+        <button class="app-item" data-app="skin-upscale" type="button">
+          <div class="app-icon">HD</div>
+          <div class="app-copy">
+            <strong>去AI感真实皮肤高清放大</strong>
+            <span>Image Enhance</span>
+          </div>
+          <i class="active-dot"></i>
+        </button>
+
+        <button class="app-item" data-app="qwen-image-2-1-multi-edit" type="button">
+          <div class="app-icon">Q2</div>
+          <div class="app-copy">
+            <strong>Qwen Image 2.1 多图编辑</strong>
+            <span>Multi Image Edit</span>
+          </div>
+          <i class="active-dot"></i>
+        </button>
+
+        <button class="app-item" data-app="minimax-h3-multi-fast" type="button">
+          <div class="app-icon">MF</div>
+          <div class="app-copy">
+            <strong>MinimaxH3多图生视频</strong>
+            <span>加速版</span>
+          </div>
+          <i class="active-dot"></i>
+        </button>
+
+        <div id="appFilterEmpty" class="app-filter-empty hidden">
+          <strong>暂无应用</strong>
+          <span>这个分类还没有接入应用。</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="sidebar-foot">
+      <div class="api-state">
+        <i id="sideDot" class="dot"></i>
+        <div>
+          <strong id="sideStatus">API Key 未配置</strong>
+          <span>RUNNINGHUB API V2</span>
+        </div>
+      </div>
+    </div>
+  </aside>
+
+  <main class="main">
+    <header class="topbar glass">
+      <div class="page-title">
+        <span>CURRENT APP</span>
+        <strong id="currentAppTitle">MinimaxH3多参生视频 · 量化加速V3版</strong>
+      </div>
+      <div class="top-actions">
+        <div class="live-pill"><i></i><span>ONLINE</span></div>
+        <button id="openHistory" class="history-btn" type="button">
+          <span>生成记录</span><b>↺</b>
+        </button>
+        <button id="openMaterialSettings" class="settings-btn" type="button">
+          <span>素材设置</span><b>▦</b>
+        </button>
+        <button id="openPromptSettings" class="settings-btn prompt-settings-btn" type="button">
+          <span>提示词设置</span><b>✦</b>
+        </button>
+        <button id="openSettings" class="settings-btn" type="button">
+          <span>设置</span><b>⌘</b>
+        </button>
+      </div>
+    </header>
+
+    <div id="workspaceVideo" class="workspace app-workspace">
+      <div class="workspace-top">
+        <section class="asset-panel glass">
+          <div class="panel-head">
+            <div>
+              <span>REFERENCE INPUTS</span>
+              <h2>参考素材</h2>
+            </div>
+            <div class="material-head-actions">
+              <button id="quickFillMaterials" class="material-quick-btn" type="button"><span>填入素材</span><i>↓</i></button>
+              <b><span id="materialSavedCount">0</span>/10 SAVED</b>
+            </div>
+          </div>
+
+          <div class="image-grid">
+            <button class="upload-slot image-slot" data-slot="img141" type="button">
+              <input type="file" accept="image/*" hidden>
+              <div class="media-preview"><span>01</span><i>＋</i></div>
+              <div class="media-caption"><strong>参考图 1</strong><small>IMAGE</small></div>
+              <em class="slot-clear hidden">×</em>
+            </button>
+            <button class="upload-slot image-slot" data-slot="img142" type="button">
+              <input type="file" accept="image/*" hidden>
+              <div class="media-preview"><span>02</span><i>＋</i></div>
+              <div class="media-caption"><strong>参考图 2</strong><small>IMAGE</small></div>
+              <em class="slot-clear hidden">×</em>
+            </button>
+            <button class="upload-slot image-slot" data-slot="img143" type="button">
+              <input type="file" accept="image/*" hidden>
+              <div class="media-preview"><span>03</span><i>＋</i></div>
+              <div class="media-caption"><strong>参考图 3</strong><small>IMAGE</small></div>
+              <em class="slot-clear hidden">×</em>
+            </button>
+            <button class="upload-slot image-slot" data-slot="img161" type="button">
+              <input type="file" accept="image/*" hidden>
+              <div class="media-preview"><span>04</span><i>＋</i></div>
+              <div class="media-caption"><strong>参考图 4</strong><small>IMAGE</small></div>
+              <em class="slot-clear hidden">×</em>
+            </button>
+            <button class="upload-slot image-slot" data-slot="img175" type="button">
+              <input type="file" accept="image/*" hidden>
+              <div class="media-preview"><span>05</span><i>＋</i></div>
+              <div class="media-caption"><strong>参考图 5</strong><small>IMAGE</small></div>
+              <em class="slot-clear hidden">×</em>
+            </button>
+            <button class="upload-slot image-slot" data-slot="img176" type="button">
+              <input type="file" accept="image/*" hidden>
+              <div class="media-preview"><span>06</span><i>＋</i></div>
+              <div class="media-caption"><strong>参考图 6</strong><small>IMAGE</small></div>
+              <em class="slot-clear hidden">×</em>
+            </button>
+          </div>
+
+          <button class="upload-slot video-reference" data-slot="video164" type="button">
+            <input type="file" accept="video/*" hidden>
+            <div class="video-reference-preview"><span>VIDEO</span><i>＋</i></div>
+            <div class="video-reference-copy">
+              <strong>参考视频</strong>
+              <small>支持上传本地视频作为结构 / 动作 / 镜头参考</small>
+            </div>
+            <em class="slot-clear hidden">×</em>
+          </button>
+
+          <div class="audio-grid">
+            <button class="upload-slot audio-slot" data-slot="audio144" type="button">
+              <input type="file" accept="audio/*" hidden>
+              <div class="audio-icon">A1</div>
+              <div><strong>音频 1</strong><small>AUDIO</small></div>
+              <em class="slot-clear hidden">×</em>
+            </button>
+            <button class="upload-slot audio-slot" data-slot="audio160" type="button">
+              <input type="file" accept="audio/*" hidden>
+              <div class="audio-icon">A2</div>
+              <div><strong>音频 2</strong><small>AUDIO</small></div>
+              <em class="slot-clear hidden">×</em>
+            </button>
+            <button class="upload-slot audio-slot" data-slot="audio189" type="button">
+              <input type="file" accept="audio/*" hidden>
+              <div class="audio-icon">A3</div>
+              <div><strong>音频 3</strong><small>AUDIO</small></div>
+              <em class="slot-clear hidden">×</em>
+            </button>
+          </div>
+        </section>
+
+        <section class="output-panel glass">
+          <div class="panel-head output-head">
+            <div>
+              <span>VIDEO OUTPUT</span>
+              <h2>视频结构预览</h2>
+            </div>
+            <div class="output-head-actions">
+              <div class="status-pill">
+                <i id="statusDot" class="status-dot"></i>
+                <div><strong id="statusText">等待生成</strong><span id="taskMeta">READY</span></div>
+              </div>
+              <button id="downloadBtn" class="download-btn" type="button" disabled>
+                <span>下载</span><b>↓</b>
+              </button>
+            </div>
+          </div>
+
+          <div class="image-preview-shell">
+            <div id="resultArea" class="image-preview-stage video-preview-stage">
+              <div class="empty-state">
+                <div class="empty-mark">▶</div>
+                <strong>准备生成你的下一段视频</strong>
+                <span>添加参考素材并输入提示词，生成结果会直接显示在这里。</span>
+              </div>
+            </div>
+          </div>
+        </section>
+      </div>
+
+      <div class="workspace-bottom">
+        <section class="prompt-panel glass">
+          <div class="panel-head compact-head">
+            <div>
+              <span>PROMPT</span>
+              <h2>提示词</h2>
+            </div>
+            <div class="prompt-head-actions">
+              <b id="promptCount">0</b>
+              <button id="promptQuickFill" class="prompt-quick-btn" type="button"><span>提示词生成</span><i>✦</i></button>
+            </div>
+          </div>
+          <textarea id="promptInput" placeholder="描述视频内容、角色、动作、镜头、节奏、光线、风格，以及每个参考素材应该如何被使用……"></textarea>
+        </section>
+
+        <section class="operation-panel glass">
+          <div class="panel-head compact-head operation-head">
+            <div>
+              <span>GENERATION CONTROL</span>
+              <h2>操作区</h2>
+            </div>
+            <div class="workflow-state compact-state"><i></i><span>已绑定工作流</span></div>
+          </div>
+
+          <div class="operation-grid">
+            <label class="operation-field">
+              <span>比例</span>
+              <select id="aspectRatio">
+                <option value="1:1 (Square)">1:1</option>
+                <option value="2:3 (Portrait Photo)">2:3</option>
+                <option value="3:2 (Photo)">3:2</option>
+                <option value="3:4 (Portrait Standard)">3:4</option>
+                <option value="4:3 (Standard)">4:3</option>
+                <option value="9:16 (Portrait Widescreen)" selected>9:16</option>
+                <option value="16:9 (Widescreen)">16:9</option>
+                <option value="21:9 (Ultrawide)">21:9</option>
+              </select>
+            </label>
+
+            <label class="operation-field">
+              <span>清晰度</span>
+              <select id="qualityPreset">
+                <option value="0.4">480P</option>
+                <option value="0.9" selected>720P</option>
+                <option value="2.0">1080P</option>
+              </select>
+            </label>
+          </div>
+
+          <div class="duration-control">
+            <div class="duration-head">
+              <span>时长</span>
+              <b id="durationValue">10s</b>
+            </div>
+            <input id="durationRange" type="range" min="5" max="15" step="1" value="10">
+            <div class="duration-scale"><span>5s</span><span>15s</span></div>
+          </div>
+
+          <div class="operation-foot batch-operation-foot">
+            <button id="runBtn" class="generate-btn" type="button">
+              <span class="generate-label">开始生成</span><b>↗</b>
+            </button>
+            <button class="batch-open-btn" data-auto-generate-app="minimax-h3" type="button">
+              <span>批量生成</span><b>⇉</b>
+            </button>
+          </div>
+        </section>
+      </div>
+    </div>
+
+    <div id="workspaceImage" class="workspace app-workspace image-workspace hidden">
+      <div class="image-workspace-main">
+        <section class="image-prompt-panel glass">
+          <div class="panel-head">
+            <div>
+              <span>PROMPT INPUT</span>
+              <h2>提示词</h2>
+            </div>
+            <div class="prompt-head-actions">
+              <b id="imagePromptCount">0</b>
+              <button class="prompt-quick-btn image-prompt-quick-fill" data-image-prompt-target="#imagePromptInput" type="button">
+                <span>提示词生成</span><i>✦</i>
+              </button>
+            </div>
+          </div>
+          <textarea id="imagePromptInput" placeholder="描述画面主体、场景、构图、镜头、光线、材质、色彩和整体视觉风格……"></textarea>
+          <div class="image-app-note">
+            <i></i>
+            <div>
+              <strong>纯文本生图</strong>
+              <span>当前工作流固定输出 2MP；其余未确认节点使用 API 示例默认值。</span>
+            </div>
+          </div>
+        </section>
+
+        <section class="output-panel glass">
+          <div class="panel-head output-head">
+            <div>
+              <span>IMAGE OUTPUT</span>
+              <h2>图片预览</h2>
+            </div>
+            <div class="output-head-actions">
+              <div class="status-pill">
+                <i id="imageStatusDot" class="status-dot"></i>
+                <div><strong id="imageStatusText">等待生成</strong><span id="imageTaskMeta">READY</span></div>
+              </div>
+              <button id="imageDownloadBtn" class="download-btn" type="button" disabled>
+                <span>下载</span><b>↓</b>
+              </button>
+            </div>
+          </div>
+
+          <div class="image-preview-shell">
+            <div id="imageResultArea" class="image-preview-stage">
+              <div class="empty-state">
+                <div class="empty-mark">＋</div>
+                <strong>准备生成图片</strong>
+                <span>输入提示词并设置画幅，生成结果会显示在这里。</span>
+              </div>
+            </div>
+          </div>
+        </section>
+      </div>
+
+      <section class="image-control-panel glass">
+        <div class="image-control-copy">
+          <span>GENERATION CONTROL</span>
+          <h2>操作区</h2>
+          <small>RunningHub AI App · 2086825499864018945</small>
+        </div>
+
+        <label class="image-control-field">
+          <span>比例</span>
+          <select id="imageAspectRatio">
+            <option value="1:1 (Square)">1:1</option>
+            <option value="2:3 (Portrait Photo)">2:3</option>
+            <option value="3:2 (Photo)">3:2</option>
+            <option value="3:4 (Portrait Standard)">3:4</option>
+            <option value="4:3 (Standard)">4:3</option>
+            <option value="9:16 (Portrait Widescreen)" selected>9:16</option>
+            <option value="16:9 (Widescreen)">16:9</option>
+            <option value="21:9 (Ultrawide)">21:9</option>
+          </select>
+        </label>
+
+        <div class="image-fixed-field">
+          <span>输出像素</span>
+          <strong>2MP</strong>
+        </div>
+
+        <div class="image-workflow-state">
+          <i></i>
+          <span>已绑定 AI App</span>
+        </div>
+
+        <button id="imageRunBtn" class="generate-btn image-generate-btn" type="button">
+          <span class="image-generate-label">开始生成</span><b>↗</b>
+        </button>
+      </section>
+    </div>
+
+    <div id="workspaceWhiteMarble" class="workspace app-workspace image-workspace hidden">
+      <div class="image-workspace-main">
+        <section class="image-prompt-panel glass">
+          <div class="panel-head">
+            <div>
+              <span>PROMPT INPUT</span>
+              <h2>提示词</h2>
+            </div>
+            <div class="prompt-head-actions">
+              <b id="whiteMarblePromptCount">0</b>
+              <button class="prompt-quick-btn image-prompt-quick-fill" data-image-prompt-target="#whiteMarblePromptInput" type="button">
+                <span>提示词生成</span><i>✦</i>
+              </button>
+            </div>
+          </div>
+          <textarea id="whiteMarblePromptInput" placeholder="描述人物、姿态、服装、场景、镜头、光线、材质与整体肖像风格……"></textarea>
+          <div class="image-app-note">
+            <i></i>
+            <div>
+              <strong>Krea2 turbo White_Marble-AIO（Portrait Master）</strong>
+              <span>默认 1080 × 1920，单张输出；Width、Height、Seed 可调。</span>
+            </div>
+          </div>
+        </section>
+
+        <section class="output-panel glass">
+          <div class="panel-head output-head">
+            <div>
+              <span>IMAGE OUTPUT</span>
+              <h2>图片预览</h2>
+            </div>
+            <div class="output-head-actions">
+              <div class="status-pill">
+                <i id="whiteMarbleStatusDot" class="status-dot"></i>
+                <div><strong id="whiteMarbleStatusText">等待生成</strong><span id="whiteMarbleTaskMeta">READY</span></div>
+              </div>
+              <button id="whiteMarbleDownloadBtn" class="download-btn" type="button" disabled>
+                <span>下载</span><b>↓</b>
+              </button>
+            </div>
+          </div>
+
+          <div class="image-preview-shell">
+            <div id="whiteMarbleResultArea" class="image-preview-stage">
+              <div class="empty-state">
+                <div class="empty-mark">＋</div>
+                <strong>准备生成肖像</strong>
+                <span>输入提示词并设置输出尺寸，生成结果会显示在这里。</span>
+              </div>
+            </div>
+          </div>
+        </section>
+      </div>
+
+      <section class="image-control-panel white-marble-control-panel glass">
+        <div class="image-control-copy">
+          <span>GENERATION CONTROL</span>
+          <h2>操作区</h2>
+          <small>RunningHub AI App · 2083580194556071937</small>
+        </div>
+
+        <label class="image-control-field">
+          <span>Width</span>
+          <input id="whiteMarbleWidth" class="control-input" inputmode="numeric" value="1080">
+        </label>
+
+        <label class="image-control-field">
+          <span>Height</span>
+          <input id="whiteMarbleHeight" class="control-input" inputmode="numeric" value="1920">
+        </label>
+
+        <label class="image-control-field white-marble-seed-field">
+          <span>Seed</span>
+          <input id="whiteMarbleSeed" class="control-input" inputmode="numeric" value="527633149753192">
+        </label>
+
+        <div class="image-workflow-state">
+          <i></i>
+          <span>Batch · 1</span>
+        </div>
+
+        <button id="whiteMarbleRunBtn" class="generate-btn image-generate-btn" type="button">
+          <span class="white-marble-generate-label">开始生成</span><b>↗</b>
+        </button>
+      </section>
+    </div>
+
+
+    <div id="workspaceKQ12" class="workspace app-workspace image-workspace hidden">
+      <div class="image-workspace-main">
+        <section class="image-prompt-panel glass">
+          <div class="panel-head">
+            <div>
+              <span>PROMPT INPUT</span>
+              <h2>提示词</h2>
+            </div>
+            <div class="prompt-head-actions">
+              <b id="kq12PromptCount">0</b>
+              <button class="prompt-quick-btn image-prompt-quick-fill" data-image-prompt-target="#kq12PromptInput" type="button">
+                <span>提示词生成</span><i>✦</i>
+              </button>
+            </div>
+          </div>
+          <textarea id="kq12PromptInput" placeholder="描述人物、五官、妆造、服装、场景、镜头、光线、氛围与整体真实人像风格……"></textarea>
+          <div class="image-app-note">
+            <i></i>
+            <div>
+              <strong>KQ12Z真实人像-超绝美感文生图</strong>
+              <span>当前 AI App 仅开放 Prompt 输入。</span>
+            </div>
+          </div>
+        </section>
+
+        <section class="output-panel glass">
+          <div class="panel-head output-head">
+            <div>
+              <span>IMAGE OUTPUT</span>
+              <h2>图片预览</h2>
+            </div>
+            <div class="output-head-actions">
+              <div class="status-pill">
+                <i id="kq12StatusDot" class="status-dot"></i>
+                <div><strong id="kq12StatusText">等待生成</strong><span id="kq12TaskMeta">READY</span></div>
+              </div>
+              <button id="kq12DownloadBtn" class="download-btn" type="button" disabled>
+                <span>下载</span><b>↓</b>
+              </button>
+            </div>
+          </div>
+
+          <div class="image-preview-shell">
+            <div id="kq12ResultArea" class="image-preview-stage">
+              <div class="empty-state">
+                <div class="empty-mark">＋</div>
+                <strong>准备生成图片</strong>
+                <span>输入提示词后即可开始生成。</span>
+              </div>
+            </div>
+          </div>
+        </section>
+      </div>
+
+      <section class="image-control-panel kq12-control-panel glass">
+        <div class="image-control-copy">
+          <span>GENERATION CONTROL</span>
+          <h2>操作区</h2>
+          <small>RunningHub AI App · 2074694253623726082</small>
+        </div>
+
+        <div class="image-fixed-field">
+          <span>输入模式</span>
+          <strong>Prompt Only</strong>
+        </div>
+
+        <div class="image-workflow-state">
+          <i></i>
+          <span>Node 216 · text</span>
+        </div>
+
+        <button id="kq12RunBtn" class="generate-btn image-generate-btn" type="button">
+          <span class="kq12-generate-label">开始生成</span><b>↗</b>
+        </button>
+      </section>
+    </div>
+
+
+    <div id="workspaceSkinUpscale" class="workspace app-workspace image-workspace hidden">
+      <div class="image-workspace-main skin-workspace-main">
+        <section class="skin-input-panel glass">
+          <div class="panel-head">
+            <div>
+              <span>IMAGE INPUT</span>
+              <h2>原图</h2>
+            </div>
+            <b>1 INPUT</b>
+          </div>
+
+          <button id="skinUpscaleUpload" class="skin-upload-slot" type="button">
+            <input id="skinUpscaleFileInput" type="file" accept="image/*" hidden>
+            <div id="skinUpscalePreview" class="skin-upload-preview">
+              <span>IMAGE</span><i>＋</i>
+            </div>
+            <div class="skin-upload-copy">
+              <strong id="skinUpscaleFileName">上传需要高清放大的图片</strong>
+              <small>用于真实皮肤增强与去 AI 感处理</small>
+            </div>
+            <em id="skinUpscaleClear" class="slot-clear hidden">×</em>
+          </button>
+
+          <div class="image-app-note">
+            <i></i>
+            <div>
+              <strong>去AI感真实皮肤高清放大</strong>
+              <span>当前 AI App 仅需要一张输入图片。</span>
+            </div>
+          </div>
+        </section>
+
+        <section class="output-panel glass">
+          <div class="panel-head output-head">
+            <div>
+              <span>IMAGE OUTPUT</span>
+              <h2>高清结果预览</h2>
+            </div>
+            <div class="output-head-actions">
+              <div class="status-pill">
+                <i id="skinUpscaleStatusDot" class="status-dot"></i>
+                <div><strong id="skinUpscaleStatusText">等待生成</strong><span id="skinUpscaleTaskMeta">READY</span></div>
+              </div>
+              <button id="skinUpscaleDownloadBtn" class="download-btn" type="button" disabled>
+                <span>下载</span><b>↓</b>
+              </button>
+            </div>
+          </div>
+
+          <div class="image-preview-shell">
+            <div id="skinUpscaleResultArea" class="image-preview-stage">
+              <div class="empty-state">
+                <div class="empty-mark">＋</div>
+                <strong>准备处理图片</strong>
+                <span>上传原图后即可开始高清放大。</span>
+              </div>
+            </div>
+          </div>
+        </section>
+      </div>
+
+      <section class="image-control-panel skin-control-panel glass">
+        <div class="image-control-copy">
+          <span>GENERATION CONTROL</span>
+          <h2>操作区</h2>
+          <small>RunningHub AI App · 2050826078431793153</small>
+        </div>
+
+        <div class="image-fixed-field">
+          <span>处理模式</span>
+          <strong>真实皮肤高清放大</strong>
+        </div>
+
+        <div class="image-workflow-state">
+          <i></i>
+          <span>Node 46 · image</span>
+        </div>
+
+        <button id="skinUpscaleRunBtn" class="generate-btn image-generate-btn" type="button">
+          <span class="skin-upscale-generate-label">开始处理</span><b>↗</b>
+        </button>
+      </section>
+    </div>
+
+
+    <div id="workspaceQwenMultiEdit" class="workspace app-workspace hidden">
+      <div class="workspace-top">
+        <section class="asset-panel glass">
+          <div class="panel-head">
+            <div>
+              <span>REFERENCE INPUTS</span>
+              <h2>多图参考</h2>
+            </div>
+            <b>6 INPUTS</b>
+          </div>
+
+          <div class="image-grid">
+            <button class="upload-slot image-slot" data-slot="qwenImg420" type="button">
+              <input type="file" accept="image/*" hidden>
+              <div class="media-preview"><span>01</span><i>＋</i></div>
+              <div class="media-caption"><strong>参考图 1</strong><small>IMAGE</small></div>
+              <em class="slot-clear hidden">×</em>
+            </button>
+            <button class="upload-slot image-slot" data-slot="qwenImg432" type="button">
+              <input type="file" accept="image/*" hidden>
+              <div class="media-preview"><span>02</span><i>＋</i></div>
+              <div class="media-caption"><strong>参考图 2</strong><small>IMAGE</small></div>
+              <em class="slot-clear hidden">×</em>
+            </button>
+            <button class="upload-slot image-slot" data-slot="qwenImg433" type="button">
+              <input type="file" accept="image/*" hidden>
+              <div class="media-preview"><span>03</span><i>＋</i></div>
+              <div class="media-caption"><strong>参考图 3</strong><small>IMAGE</small></div>
+              <em class="slot-clear hidden">×</em>
+            </button>
+            <button class="upload-slot image-slot" data-slot="qwenImg436" type="button">
+              <input type="file" accept="image/*" hidden>
+              <div class="media-preview"><span>04</span><i>＋</i></div>
+              <div class="media-caption"><strong>参考图 4</strong><small>IMAGE</small></div>
+              <em class="slot-clear hidden">×</em>
+            </button>
+            <button class="upload-slot image-slot" data-slot="qwenImg435" type="button">
+              <input type="file" accept="image/*" hidden>
+              <div class="media-preview"><span>05</span><i>＋</i></div>
+              <div class="media-caption"><strong>参考图 5</strong><small>IMAGE</small></div>
+              <em class="slot-clear hidden">×</em>
+            </button>
+            <button class="upload-slot image-slot" data-slot="qwenImg434" type="button">
+              <input type="file" accept="image/*" hidden>
+              <div class="media-preview"><span>06</span><i>＋</i></div>
+              <div class="media-caption"><strong>参考图 6</strong><small>IMAGE</small></div>
+              <em class="slot-clear hidden">×</em>
+            </button>
+          </div>
+        </section>
+
+        <section class="output-panel glass">
+          <div class="panel-head output-head">
+            <div>
+              <span>IMAGE OUTPUT</span>
+              <h2>编辑结果预览</h2>
+            </div>
+            <div class="output-head-actions">
+              <div class="status-pill">
+                <i id="qwenMultiEditStatusDot" class="status-dot"></i>
+                <div><strong id="qwenMultiEditStatusText">等待生成</strong><span id="qwenMultiEditTaskMeta">READY</span></div>
+              </div>
+              <button id="qwenMultiEditDownloadBtn" class="download-btn" type="button" disabled>
+                <span>下载</span><b>↓</b>
+              </button>
+            </div>
+          </div>
+
+          <div class="image-preview-shell">
+            <div id="qwenMultiEditResultArea" class="image-preview-stage">
+              <div class="empty-state">
+                <div class="empty-mark">＋</div>
+                <strong>准备编辑图片</strong>
+                <span>上传参考图并输入编辑指令，结果会显示在这里。</span>
+              </div>
+            </div>
+          </div>
+        </section>
+      </div>
+
+      <div class="workspace-bottom">
+        <section class="prompt-panel glass">
+          <div class="panel-head compact-head">
+            <div>
+              <span>EDIT PROMPT</span>
+              <h2>编辑指令</h2>
+            </div>
+            <div class="prompt-head-actions">
+              <b id="qwenMultiEditPromptCount">0</b>
+            </div>
+          </div>
+          <textarea id="qwenMultiEditPromptInput" placeholder="例如：图1的人物换上图2的衣服；保留人物身份、姿态和原有场景关系……"></textarea>
+        </section>
+
+        <section class="operation-panel glass">
+          <div class="panel-head compact-head operation-head">
+            <div>
+              <span>GENERATION CONTROL</span>
+              <h2>操作区</h2>
+            </div>
+            <div class="workflow-state compact-state"><i></i><span>Qwen Image 2.1</span></div>
+          </div>
+
+          <div class="operation-grid">
+            <label class="operation-field">
+              <span>比例</span>
+              <select id="qwenMultiEditAspectRatio">
+                <option value="original">原图比例</option>
+                <option value="custom">自定义</option>
+                <option value="1:1">1:1</option>
+                <option value="3:2">3:2</option>
+                <option value="4:3">4:3</option>
+                <option value="16:9">16:9</option>
+                <option value="2:3">2:3</option>
+                <option value="3:4">3:4</option>
+                <option value="9:16" selected>9:16</option>
+              </select>
+            </label>
+
+            <label class="operation-field">
+              <span>清晰度</span>
+              <select id="qwenMultiEditQuality">
+                <option value="1000">1K</option>
+                <option value="2000" selected>2K</option>
+                <option value="4000">4K</option>
+              </select>
+            </label>
+
+            <label class="operation-field">
+              <span>生成张数</span>
+              <select id="qwenMultiEditCount">
+                <option value="1" selected>1 张</option>
+                <option value="2">2 张</option>
+                <option value="3">3 张</option>
+                <option value="4">4 张</option>
+              </select>
+            </label>
+          </div>
+
+          <div class="operation-foot">
+            <button id="qwenMultiEditRunBtn" class="generate-btn" type="button">
+              <span class="qwen-multi-edit-generate-label">开始生成</span><b>↗</b>
+            </button>
+          </div>
+        </section>
+      </div>
+    </div>
+
+
+    <div id="workspaceMultiFast" class="workspace app-workspace hidden">
+      <div class="workspace-top">
+        <section class="asset-panel glass">
+          <div class="panel-head">
+            <div>
+              <span>REFERENCE INPUTS</span>
+              <h2>多图参考素材</h2>
+            </div>
+            <b>9 INPUTS</b>
+          </div>
+
+          <div class="image-grid">
+            <button class="upload-slot image-slot" data-slot="mfastImg141" type="button">
+              <input type="file" accept="image/*" hidden>
+              <div class="media-preview"><span>01</span><i>＋</i></div>
+              <div class="media-caption"><strong>参考图 1</strong><small>IMAGE</small></div>
+              <em class="slot-clear hidden">×</em>
+            </button>
+            <button class="upload-slot image-slot" data-slot="mfastImg142" type="button">
+              <input type="file" accept="image/*" hidden>
+              <div class="media-preview"><span>02</span><i>＋</i></div>
+              <div class="media-caption"><strong>参考图 2</strong><small>IMAGE</small></div>
+              <em class="slot-clear hidden">×</em>
+            </button>
+            <button class="upload-slot image-slot" data-slot="mfastImg143" type="button">
+              <input type="file" accept="image/*" hidden>
+              <div class="media-preview"><span>03</span><i>＋</i></div>
+              <div class="media-caption"><strong>参考图 3</strong><small>IMAGE</small></div>
+              <em class="slot-clear hidden">×</em>
+            </button>
+            <button class="upload-slot image-slot" data-slot="mfastImg161" type="button">
+              <input type="file" accept="image/*" hidden>
+              <div class="media-preview"><span>04</span><i>＋</i></div>
+              <div class="media-caption"><strong>参考图 4</strong><small>IMAGE</small></div>
+              <em class="slot-clear hidden">×</em>
+            </button>
+            <button class="upload-slot image-slot" data-slot="mfastImg165" type="button">
+              <input type="file" accept="image/*" hidden>
+              <div class="media-preview"><span>05</span><i>＋</i></div>
+              <div class="media-caption"><strong>参考图 5</strong><small>IMAGE</small></div>
+              <em class="slot-clear hidden">×</em>
+            </button>
+            <button class="upload-slot image-slot" data-slot="mfastImg166" type="button">
+              <input type="file" accept="image/*" hidden>
+              <div class="media-preview"><span>06</span><i>＋</i></div>
+              <div class="media-caption"><strong>参考图 6</strong><small>IMAGE</small></div>
+              <em class="slot-clear hidden">×</em>
+            </button>
+          </div>
+
+          <button class="upload-slot video-reference" data-slot="mfastVideo164" type="button">
+            <input type="file" accept="video/*" hidden>
+            <div class="video-reference-preview"><span>VIDEO</span><i>＋</i></div>
+            <div class="video-reference-copy">
+              <strong>参考视频</strong>
+              <small>可选视频参考</small>
+            </div>
+            <em class="slot-clear hidden">×</em>
+          </button>
+
+          <div class="audio-grid">
+            <button class="upload-slot audio-slot" data-slot="mfastAudio144" type="button">
+              <input type="file" accept="audio/*" hidden>
+              <div class="audio-icon">A1</div>
+              <div><strong>音频 1</strong><small>AUDIO</small></div>
+              <em class="slot-clear hidden">×</em>
+            </button>
+            <button class="upload-slot audio-slot" data-slot="mfastAudio160" type="button">
+              <input type="file" accept="audio/*" hidden>
+              <div class="audio-icon">A2</div>
+              <div><strong>音频 2</strong><small>AUDIO</small></div>
+              <em class="slot-clear hidden">×</em>
+            </button>
+          </div>
+        </section>
+
+        <section class="output-panel glass">
+          <div class="panel-head output-head">
+            <div>
+              <span>VIDEO OUTPUT</span>
+              <h2>视频预览</h2>
+            </div>
+            <div class="output-head-actions">
+              <div class="status-pill">
+                <i id="multiFastStatusDot" class="status-dot"></i>
+                <div><strong id="multiFastStatusText">等待生成</strong><span id="multiFastTaskMeta">READY</span></div>
+              </div>
+              <button id="multiFastDownloadBtn" class="download-btn" type="button" disabled>
+                <span>下载</span><b>↓</b>
+              </button>
+            </div>
+          </div>
+
+          <div class="image-preview-shell">
+            <div id="multiFastResultArea" class="image-preview-stage video-preview-stage">
+              <div class="empty-state">
+                <div class="empty-mark">▶</div>
+                <strong>准备生成视频</strong>
+                <span>添加参考素材并输入提示词，结果会显示在这里。</span>
+              </div>
+            </div>
+          </div>
+        </section>
+      </div>
+
+      <div class="workspace-bottom">
+        <section class="prompt-panel glass">
+          <div class="panel-head compact-head">
+            <div>
+              <span>PROMPT</span>
+              <h2>提示词</h2>
+            </div>
+            <div class="prompt-head-actions">
+              <b id="multiFastPromptCount">0</b>
+              <button id="multiFastPromptQuickFill" class="prompt-quick-btn" type="button"><span>提示词生成</span><i>✦</i></button>
+            </div>
+          </div>
+          <textarea id="multiFastPromptInput" placeholder="描述人物、动作、镜头、台词、声音和整体视频内容……"></textarea>
+        </section>
+
+        <section class="operation-panel glass">
+          <div class="panel-head compact-head operation-head">
+            <div>
+              <span>GENERATION CONTROL</span>
+              <h2>操作区</h2>
+            </div>
+            <div class="workflow-state compact-state"><i></i><span>加速版 · V2</span></div>
+          </div>
+
+          <div class="operation-grid">
+            <label class="operation-field">
+              <span>比例</span>
+              <select id="multiFastAspectRatio">
+                <option value="1:1 (Square)">1:1</option>
+                <option value="2:3 (Portrait Photo)">2:3</option>
+                <option value="3:2 (Photo)">3:2</option>
+                <option value="3:4 (Portrait Standard)">3:4</option>
+                <option value="4:3 (Standard)">4:3</option>
+                <option value="9:16 (Portrait Widescreen)" selected>9:16</option>
+                <option value="16:9 (Widescreen)">16:9</option>
+                <option value="21:9 (Ultrawide)">21:9</option>
+              </select>
+            </label>
+
+            <div class="image-fixed-field">
+              <span>固定参数</span>
+              <strong>132=10 · 147=0.4</strong>
+            </div>
+          </div>
+
+          <div class="operation-foot batch-operation-foot">
+            <button id="multiFastRunBtn" class="generate-btn" type="button">
+              <span class="multi-fast-generate-label">开始生成</span><b>↗</b>
+            </button>
+            <button class="batch-open-btn" data-auto-generate-app="minimax-h3-multi-fast" type="button">
+              <span>批量生成</span><b>⇉</b>
+            </button>
+          </div>
+        </section>
+      </div>
+    </div>
+
+  </main>
+</div>
+
+<div id="settingsOverlay" class="drawer-overlay hidden">
+  <button class="drawer-backdrop" data-close aria-label="关闭设置"></button>
+  <aside class="drawer glass">
+    <div class="drawer-head">
+      <div><span>GLOBAL SETTINGS</span><h2>设置</h2></div>
+      <button class="drawer-close" data-close type="button">×</button>
+    </div>
+
+    <section class="drawer-section">
+      <div class="drawer-title">
+        <div><strong>RunningHub API</strong><span>所有应用统一使用，API Key 仅保存在当前浏览器</span></div>
+        <b id="settingsBadge">NOT CONFIGURED</b>
+      </div>
+      <div class="key-status">
+        <i id="settingsDot" class="dot"></i>
+        <span id="keyStatusText">尚未保存 API Key</span>
+        <code id="keyMask"></code>
+      </div>
+      <div class="key-row">
+        <input id="apiKeyInput" class="input" type="password" autocomplete="off" placeholder="输入 RunningHub API Key">
+        <button id="toggleKey" class="btn soft" type="button">显示</button>
+        <button id="saveKey" class="btn primary" type="button">保存</button>
+      </div>
+      <button id="clearKey" class="text-danger" type="button">清除 API Key</button>
+    </section>
+
+    <section class="drawer-section">
+      <div class="drawer-title">
+        <div><strong>当前应用</strong><span id="settingsCurrentApp">MinimaxH3多参生视频 · 量化加速V3版</span></div>
+      </div>
+
+      <label class="setting-field">
+        <span>运行实例 · 所有支持实例参数的应用共用</span>
+        <select id="instanceType" class="input">
+          <option value="default">Default · 24G</option>
+          <option value="plus">Plus · 48G</option>
+          <option value="ultra">Ultra · 84G</option>
+        </select>
+      </label>
+    </section>
+
+    <section class="drawer-section compact">
+      <button id="clearLocal" class="btn soft full" type="button">重置本地应用配置</button>
+    </section>
+  </aside>
+</div>
+
+
+<div id="autoGenerateOverlay" class="drawer-overlay hidden">
+  <button class="drawer-backdrop" data-close aria-label="关闭自动生成"></button>
+  <aside class="drawer glass auto-generation-drawer">
+    <div class="drawer-head">
+      <div><span>AUTO GENERATION</span><h2>自动生成</h2></div>
+      <button class="drawer-close" data-close type="button">×</button>
+    </div>
+
+    <section class="drawer-section compact">
+      <div class="drawer-title">
+        <div>
+          <strong>当前页面批量生成</strong>
+          <span>应用、素材、比例、清晰度、时长等全部以点击“批量生成”时当前页面的状态为准。</span>
+        </div>
+        <b>MAX 2</b>
+      </div>
+
+      <div class="auto-generation-note">
+        <strong>执行规则：</strong>当前页面已经填入的素材和参数会在开始时冻结；素材只上传一次并供本批次复用。每个任务都会重新随机 <code>{{clothes}}</code> 与 <code>{{performance}}</code>。并发最多 2 条，完成后自动补下一条。
+      </div>
+
+      <div class="auto-generation-grid">
+        <label class="auto-generation-field">
+          <span>总生成数量</span>
+          <input id="autoGenerateTotal" type="number" min="1" step="1" value="4" inputmode="numeric">
+        </label>
+        <label class="auto-generation-field">
+          <span>并发数量 · 最大 2</span>
+          <select id="autoGenerateConcurrency">
+            <option value="1">1</option>
+            <option value="2" selected>2</option>
+          </select>
+        </label>
+      </div>
+
+      <div class="auto-generation-summary">
+        <div><span>当前应用</span><strong id="autoGenerateApp">—</strong></div>
+        <div><span>当前素材</span><strong id="autoGenerateMaterials">0 个</strong></div>
+        <div><span>提示词策略</span><strong>每条独立随机</strong></div>
+      </div>
+
+      <div class="auto-generation-progress">
+        <div class="auto-generation-progress-head">
+          <strong id="autoGenerateStatus">等待开始</strong>
+          <span id="autoGenerateCounter">0 / 0</span>
+        </div>
+        <div class="auto-generation-track"><i id="autoGenerateProgressBar"></i></div>
+        <small id="autoGenerateDetail">仅支持当前选中的视频应用。批量运行时请保持工作台页面打开。</small>
+      </div>
+
+      <div class="auto-generation-actions">
+        <button id="startAutoGenerate" class="generate-btn" type="button">
+          <span>开始自动生成</span><b>↗</b>
+        </button>
+        <button id="downloadCurrentBatch" class="auto-batch-download-btn" type="button" disabled>
+          <span>本次打包下载</span><b>↓</b>
+        </button>
+        <button id="stopAutoGenerate" class="auto-stop-btn" type="button" disabled>停止新增</button>
+      </div>
+    </section>
+  </aside>
+</div>
+
+
+<div id="materialSettingsOverlay" class="drawer-overlay hidden">
+  <button class="drawer-backdrop" data-close aria-label="关闭素材设置"></button>
+  <aside class="drawer glass material-settings-drawer">
+    <div class="drawer-head">
+      <div><span>MATERIAL SETTINGS</span><h2>素材设置</h2></div>
+      <button class="drawer-close" data-close type="button">×</button>
+    </div>
+
+    <section class="drawer-section">
+      <div class="drawer-title">
+        <div>
+          <strong>视频应用快捷素材</strong>
+          <span>6 张图片、1 个视频、3 个音频。上传或更换后立即写入当前浏览器缓存。</span>
+        </div>
+        <b id="materialLibraryBadge">0 / 10</b>
+      </div>
+
+      <div class="material-library-note">
+        <strong>本地持久化：</strong>素材使用浏览器 IndexedDB 保存，刷新、关闭页面后重新打开仍然保留；不会同步到其他浏览器或其他电脑。更换素材会直接覆盖对应卡槽。保存后自动重命名为“图片1～图片6 / 视频1 / 音频1～音频3”，原文件扩展名保留。
+      </div>
+
+      <div id="materialLibraryGrid" class="material-library-grid"></div>
+    </section>
+  </aside>
+</div>
+
+
+<div id="promptSettingsOverlay" class="drawer-overlay hidden">
+  <button class="drawer-backdrop" data-close aria-label="关闭提示词设置"></button>
+  <aside class="drawer glass prompt-settings-drawer">
+    <div class="drawer-head">
+      <div><span>PROMPT SETTINGS</span><h2>提示词设置</h2></div>
+      <button class="drawer-close" data-close type="button">×</button>
+    </div>
+
+    <section class="drawer-section">
+      <div class="drawer-title">
+        <div>
+          <strong>视频快捷提示词模板</strong>
+          <span>两个视频应用共用；修改后自动保存，下一次点击“提示词生成”立即使用最新版。</span>
+        </div>
+        <b>BUILT-IN</b>
+      </div>
+
+      <div class="prompt-template-note">
+        <code>{{clothes}}</code>、<code>{{performance}}</code>、<code>{{action}}</code> 由同一个 Persona 联动生成。一次随机先确定这一轮的人设，再统一决定服装、表演状态、具体动作流和表情反应。
+      </div>
+
+      <textarea id="promptTemplateInput" class="prompt-template-editor" spellcheck="false" aria-label="视频快捷提示词模板"></textarea>
+
+      <div class="prompt-template-foot">
+        <div class="prompt-template-meta">
+          <div class="prompt-variable-state">
+            <i id="promptTemplateVariableDot" class="prompt-variable-dot"></i>
+            <span id="promptTemplateVariableText">检测 {{clothes}} / {{performance}} / {{action}}</span>
+          </div>
+          <span id="promptTemplateSaveState" class="prompt-template-save-state">使用网站内置模板</span>
+        </div>
+        <b id="promptTemplateCount" class="prompt-template-count">0 字符</b>
+      </div>
+    </section>
+  </aside>
+</div>
+
+<div id="toast" class="toast"></div>
+<script src="./app.js?v=clipboard-sequential-upload-v1"></script>
+
+<script src="./persona-random.js?v=persona-image-v2"></script>
+
+</body>
+</html>
