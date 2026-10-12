@@ -3,6 +3,8 @@
 > 本文件定义 RH Studio 项目的长期开发规则。后续 Agent 在修改本项目时，应优先遵守本文件。
 > 若用户在当前对话中提出新的明确要求，以用户最新要求为最高优先级，并在确认后同步更新本文件。
 
+仓库根目录的 `SKILLS_INDEX.md` 用于项目技能选型与复用，随任务补充，只记录与本项目相关的技能。
+
 ## 1. 项目定位
 
 RH Studio 不是单一的 MinimaxH3 前端，也不是只服务于生视频。
@@ -199,8 +201,8 @@ RH Studio 不是单一的 MinimaxH3 前端，也不是只服务于生视频。
 
 现有原则：
 
-- 优先使用 RunningHub 上传接口 / 当前已实现的 `/rh-upload` 流式代理。
-- Cloudflare Pages Functions 通过 `/rh-upload` 同源流式代理转发上传，代理逻辑位于 `cloudflare/proxy.js`。
+- 优先使用 RunningHub 上传接口 / 当前已实现的 `/rh-studio/rh-upload` 流式代理。
+- Cloudflare Pages Functions 通过 `/rh-studio/rh-upload` 同源流式代理转发上传，代理逻辑位于 `apps/rh-studio/cloudflare/proxy.js`。
 - 不把大文件转成 JSON / Base64 后再经过应用 API 中转。
 - 上传成功后，应使用 RunningHub 返回的真实文件标识提交任务。
 - 文件大小、格式限制应尽量在前端提前提示。
@@ -316,30 +318,32 @@ RH Studio 不是单一的 MinimaxH3 前端，也不是只服务于生视频。
 
 当前生产流程：
 
-1. 直接修改 `susu177990-rgb/RH-studio`
+1. 直接修改 `oTATo-Boss/tools.otato.art` 中的 `apps/rh-studio/`
 2. 使用 `main` 分支
-3. Cloudflare Pages 作为生产部署平台，构建根目录为仓库根目录
+3. Cloudflare Pages 作为生产部署平台，构建根目录为聚合仓库根目录，线上入口为 `https://tools.otato.art/rh-studio/`
 4. 构建命令：`npm run build`
-5. 构建输出目录：`dist`
-6. 仓库根目录 `functions/` 提供 Pages Functions；`api/rh/` 为共享 RunningHub 请求处理器
-7. `server.js` 与 `npm start` 用于本地 Node 开发服务，端口使用 `process.env.PORT`
+5. 构建输出目录：根目录 `dist`；本工具的静态文件位于 `dist/rh-studio/`
+6. 仓库根目录 `functions/rh-studio/` 提供 Pages Functions；`apps/rh-studio/api/rh/` 为共享 RunningHub 请求处理器
+7. 在 `apps/rh-studio/` 运行 `npm start` 使用本地 `server.js`，端口使用 `process.env.PORT`；开发入口为 `/rh-studio/`，同时兼容原本不带前缀的本地路径
 8. 修改完成后必须检查 Cloudflare 最新部署状态 / 健康检查 / 线上 HTML、JS 与 API 行为
 9. **未完成线上验证前，不得向用户宣称“已上线 / 已完成”**
 
 Cloudflare Pages 静态资源与 Pages Functions 必须同时承载：
 
-- 静态工作台：`/`
-- 生成记录：`/history`
-- `/api/rh/run`
-- `/api/rh/query`
-- `/api/rh/upload`
-- `/api/rh/archive`
-- `/rh-upload`
-- `/rh-media/*`
-- `/rh-media-hk/*`
-- `/healthz`
+- 静态工作台：`/rh-studio/`
+- 生成记录：`/rh-studio/history`
+- `/rh-studio/api/rh/run`
+- `/rh-studio/api/rh/query`
+- `/rh-studio/api/rh/upload`
+- `/rh-studio/api/rh/archive`
+- `/rh-studio/rh-upload`
+- `/rh-studio/rh-media/*`
+- `/rh-studio/rh-media-hk/*`
+- `/rh-studio/healthz`
 
-`/history` 使用 Pages 内置的无扩展名 HTML 路由；生成记录页面由 `dist/history.html` 提供。
+`/rh-studio/history` 使用 Pages 内置的无扩展名 HTML 路由；生成记录页面由 `dist/rh-studio/history.html` 提供。内部接口与媒体代理必须带 `/rh-studio` 前缀，不能占用聚合站的根路径。
+
+迁移不改变 `rhstudio.*` localStorage 键及 `rhstudio-material-library` IndexedDB 数据库名。浏览器按 origin 隔离存储：旧域名的 API Key、历史、参数和素材仍保存在旧域名，不会因源码迁移自动复制到 `tools.otato.art`。新域名需重新保存 API Key；已有任务可通过 Task ID 查询并导入。
 
 ---
 

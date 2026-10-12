@@ -7,7 +7,9 @@
     "node": ">=22.13.0"
   },
   "scripts": {
-    "build": "node scripts/build.mjs"
+    "build": "node scripts/build.mjs",
+    "dev:rh-studio": "cd apps/rh-studio && node server.js",
+    "test:rh-studio": "node --test tests/rh-studio-migration.test.mjs"
   },
   "dependencies": {
     "react": "19.2.6",

@@ -1,0 +1,11 @@
+{
+  "version": 1,
+  "include": [
+    "/rh-studio/api/*",
+    "/rh-studio/rh-upload",
+    "/rh-studio/rh-media/*",
+    "/rh-studio/rh-media-hk/*",
+    "/rh-studio/healthz"
+  ],
+  "exclude": []
+}

@@ -1,6 +1,7 @@
 .DS_Store
 node_modules/
 dist/
+apps/rh-studio/dist/
 .wrangler/
 .env
 .env.*

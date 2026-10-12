@@ -1,4 +1,7 @@
 const $ = s => document.querySelector(s);
+const RH_BASE_PATH = window.location.pathname === '/rh-studio' || window.location.pathname.startsWith('/rh-studio/')
+  ? '/rh-studio' : '';
+const rhPath = path => RH_BASE_PATH + path;
 
 const LS = {
   key: 'rhstudio.apiKey',
@@ -63,10 +66,10 @@ function toMediaUrl(url) {
   try {
     const parsed = new URL(url, window.location.href);
     if (parsed.hostname === 'rh-images-1252422369.cos.ap-beijing.myqcloud.com') {
-      return '/rh-media' + parsed.pathname + parsed.search;
+      return rhPath('/rh-media') + parsed.pathname + parsed.search;
     }
     if (parsed.hostname === 'rh-hk-images-1252422369.cos.ap-hongkong.myqcloud.com') {
-      return '/rh-media-hk' + parsed.pathname + parsed.search;
+      return rhPath('/rh-media-hk') + parsed.pathname + parsed.search;
     }
   } catch {}
   return url;
@@ -180,7 +183,7 @@ async function queryTask(taskId) {
   const key = apiKey();
   if (!key) throw new Error('请先在工作台设置 RunningHub API Key');
 
-  const res = await fetch('/api/rh/query', {
+  const res = await fetch(rhPath('/api/rh/query'), {
     method:'POST',
     headers:{
       'Content-Type':'application/json',
@@ -406,7 +409,7 @@ function openHistoryDetail(taskId) {
   }
 
   const appParam = item.appKey ? '&app=' + encodeURIComponent(item.appKey) : '';
-  $('#historyDetailOpen').href = '/?task=' + encodeURIComponent(item.taskId || '') + appParam;
+  $('#historyDetailOpen').href = rhPath('/?task=') + encodeURIComponent(item.taskId || '') + appParam;
 
   bindHistoryMediaFallbacks($('#historyDetailMedia'));
 
@@ -533,7 +536,7 @@ async function requestHistoryArchive(items, archiveName, scope, button) {
       filename:archiveFilename(item, index, scope)
     }));
 
-    const res = await fetch('/api/rh/archive', {
+    const res = await fetch(rhPath('/api/rh/archive'), {
       method:'POST',
       headers:{'Content-Type':'application/json'},
       body:JSON.stringify({

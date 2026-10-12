@@ -31,6 +31,10 @@ dist/          自动生成的 Cloudflare Pages 发布目录
 - [AI 重打光提示词生成器 / RELIGHT LAB](https://tools.otato.art/relighting/)
   — [源码](apps/relighting/)，保留原仓库完整的 `main` 提交历史。
   统一构建会从源码重新生成独立 HTML，内嵌 React、Three.js 和样式，不需要后端。
+- [RH Studio](https://tools.otato.art/rh-studio/)
+  — [源码](apps/rh-studio/)，RunningHub 工作台及上传、查询、媒体代理、ZIP 导出接口。
+  生成记录位于 `/rh-studio/history`；相关 Pages Functions 位于 `functions/rh-studio/`。
+  使用 `npm run dev:rh-studio` 启动本地服务。API Key、历史与素材属于浏览器本地数据，旧域名的数据不会自动跨域迁入。
 
 ## 开发约定
 

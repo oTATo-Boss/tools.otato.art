@@ -1,5 +1,8 @@
 const $ = s => document.querySelector(s);
 const $$ = s => [...document.querySelectorAll(s)];
+const RH_BASE_PATH = window.location.pathname === '/rh-studio' || window.location.pathname.startsWith('/rh-studio/')
+  ? '/rh-studio' : '';
+const rhPath = path => RH_BASE_PATH + path;
 
 const APPS = {
   'minimax-h3': {
@@ -826,7 +829,7 @@ function openSettings() {
 }
 
 function openHistory() {
-  window.location.href = '/history';
+  window.location.href = rhPath('/history');
 }
 
 function isVideoAppKey(appKey) {
@@ -1499,7 +1502,7 @@ async function uploadViaRewrite(file, key) {
   const fd = new FormData();
   fd.append('file', file, file.name);
 
-  const res = await fetch('/rh-upload', {
+  const res = await fetch(rhPath('/rh-upload'), {
     method:'POST',
     headers:{ Authorization:'Bearer ' + key },
     body:fd
@@ -1526,7 +1529,7 @@ async function uploadViaLegacyFunction(file, key) {
   const fd = new FormData();
   fd.append('file', file, file.name);
 
-  const res = await fetch('/api/rh/upload', {
+  const res = await fetch(rhPath('/api/rh/upload'), {
     method:'POST',
     headers:{'x-rh-key':key},
     body:fd
@@ -1566,7 +1569,7 @@ async function uploadFile(file, key) {
 }
 
 async function runRHApp(appId, nodeInfoList, options={}) {
-  const res = await fetch('/api/rh/run', {
+  const res = await fetch(rhPath('/api/rh/run'), {
     method:'POST',
     headers:{
       'Content-Type':'application/json',
@@ -1599,7 +1602,7 @@ async function runRHApp(appId, nodeInfoList, options={}) {
 }
 
 async function queryRH(taskId) {
-  const res = await fetch('/api/rh/query', {
+  const res = await fetch(rhPath('/api/rh/query'), {
     method:'POST',
     headers:{
       'Content-Type':'application/json',
@@ -1630,10 +1633,10 @@ function toMediaUrl(url) {
   try {
     const parsed = new URL(url, window.location.href);
     if (parsed.hostname === 'rh-images-1252422369.cos.ap-beijing.myqcloud.com') {
-      return '/rh-media' + parsed.pathname + parsed.search;
+      return rhPath('/rh-media') + parsed.pathname + parsed.search;
     }
     if (parsed.hostname === 'rh-hk-images-1252422369.cos.ap-hongkong.myqcloud.com') {
-      return '/rh-media-hk' + parsed.pathname + parsed.search;
+      return rhPath('/rh-media-hk') + parsed.pathname + parsed.search;
     }
   } catch {}
   return url;
@@ -3309,7 +3312,7 @@ async function downloadCurrentBatchArchive() {
       .slice(-32) || 'current';
 
     const archiveName = 'rh-studio-batch-' + safeBatchId + '.zip';
-    const res = await fetch('/api/rh/archive', {
+    const res = await fetch(rhPath('/api/rh/archive'), {
       method:'POST',
       headers:{'Content-Type':'application/json'},
       body:JSON.stringify({

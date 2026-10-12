@@ -10,6 +10,7 @@ import archiveHandler from './api/rh/archive.js';
 const HOST = '0.0.0.0';
 const PORT = Number(process.env.PORT || 3000);
 const ROOT = process.cwd();
+const BASE_PATH = '/rh-studio';
 
 const MIME = {
   '.html': 'text/html; charset=utf-8',
@@ -158,7 +159,14 @@ async function proxyRequest(req, res, upstreamUrl, extraHeaders = {}) {
 
 async function route(req, res) {
   const url = new URL(req.url || '/', requestUrl(req));
-  const pathname = url.pathname;
+  if (url.pathname === BASE_PATH || url.pathname === BASE_PATH + '/history/' || url.pathname === '/history/') {
+    const target = url.pathname === BASE_PATH ? BASE_PATH + '/' : url.pathname.slice(0, -1);
+    res.writeHead(308, { Location: target + url.search });
+    res.end();
+    return;
+  }
+  const pathname = url.pathname.startsWith(BASE_PATH + '/')
+    ? url.pathname.slice(BASE_PATH.length) : url.pathname;
 
   if (pathname === '/healthz') {
     json(res, {
@@ -244,7 +252,7 @@ server.headersTimeout = 125_000;
 server.keepAliveTimeout = 65_000;
 
 server.listen(PORT, HOST, () => {
-  console.log(`RH Studio listening on http://${HOST}:${PORT}`);
+  console.log(`RH Studio listening on http://${HOST}:${PORT}${BASE_PATH}/`);
 });
 
 function shutdown(signal) {
