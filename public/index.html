@@ -12,7 +12,12 @@
       .label { color: #66695e; font-size: 14px; letter-spacing: .08em; }
       h1 { font-size: clamp(40px, 8vw, 64px); line-height: 1.1; font-weight: 650; letter-spacing: -.04em; margin: 24px 0; }
       p { font-size: 17px; line-height: 1.8; color: #5b5e53; }
-      .status { margin-top: 48px; padding-top: 24px; border-top: 1px solid #dadbd2; font-size: 14px; }
+      .tool { display: block; margin-top: 48px; padding: 24px 0; border-top: 1px solid #dadbd2; color: inherit; text-decoration: none; }
+      .tool strong { display: block; font-size: 22px; line-height: 1.4; }
+      .tool span { display: block; margin-top: 10px; color: #5b5e53; line-height: 1.7; }
+      .tool .open { margin-top: 20px; color: #242520; font-size: 14px; }
+      .tool:hover .open { text-decoration: underline; }
+      .tool:focus-visible { outline: 2px solid #5b5e53; outline-offset: 8px; }
     </style>
   </head>
   <body>
@@ -20,7 +25,11 @@
       <div class="label">tools.otato.art</div>
       <h1>oTATo Tools</h1>
       <p>创作小工具，集中在这里。</p>
-      <p class="status">工具正在整理，后续陆续上线。</p>
+      <a class="tool" href="/relighting/">
+        <strong>AI 重打光提示词生成器</strong>
+        <span>用三维光位控制多光源，生成重打光提示词。</span>
+        <span class="open">打开 RELIGHT LAB →</span>
+      </a>
     </main>
   </body>
 </html>
