@@ -871,3 +871,8 @@ select,.input{width:100%;height:38px;border:1px solid var(--line);border-radius:
   #workspaceLongH3 .long-h3-operation{overflow:visible}
   #workspaceLongH3 .long-h3-upload-note{font-size:10px}
 }
+
+#workspaceLongH3 .upload-slot.drag-over{
+  border-color:rgba(255,179,92,.6);
+  background:rgba(255,179,92,.08)
+}

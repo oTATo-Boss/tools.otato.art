@@ -147,7 +147,7 @@ function renderLongH3Loading(status, taskId) {
     '<div class="loading-state"><div class="loading-mark"></div><strong>' +
     (status === 'QUEUED' ? '任务正在排队' : status === 'UPLOADING' ? '正在上传图片' : '视频正在生成') +
     '</strong><span>' + (status === 'UPLOADING' ? '上传结束后自动提交任务' : '任务状态每 3 秒更新') + '</span></div>';
-  $('#longH3RunBtn').disabled = !!longH3State.poll || longH3State.running;
+  $('#longH3RunBtn').disabled = !!longH3State.poll || longH3State.running || !!taskId;
   $('#longH3RunLabel').textContent = '生成中…';
 }
 function renderLongH3Success(task) {
@@ -202,6 +202,7 @@ async function runLongH3Task() {
       longH3Status('UPLOADING', (index + 1) + '/' + selected.length);
       uploads[slot] = await uploadFile(state.files[slot], apiKey());
     }
+    renderLongH3Loading('SUBMITTING');
     longH3Status('SUBMITTING', 'RUNNINGHUB');
     const nodes = longH3BuildNodes(uploads, config);
     const result = await runRHApp(APPS[APP_KEYS.longH3].appId, nodes);
@@ -303,6 +304,24 @@ async function restoreLongH3Images() {
     renderFileSlot(slot);
   });
 }
+document.querySelectorAll('#workspaceLongH3 .upload-slot[data-slot]').forEach(el => {
+  el.addEventListener('dragover', event => {
+    event.preventDefault();
+    el.classList.add('drag-over');
+  });
+  el.addEventListener('dragleave', () => el.classList.remove('drag-over'));
+  el.addEventListener('drop', event => {
+    event.preventDefault();
+    el.classList.remove('drag-over');
+    const file = Array.from(event.dataTransfer?.files || [])[0];
+    if (!file) return;
+    if (file.type.startsWith('image/') || /\.(png|jpe?g|webp|gif|avif|bmp)$/i.test(file.name)) {
+      setFile(el.dataset.slot, file);
+    } else {
+      toast('该输入槽仅支持图片', 'bad');
+    }
+  });
+});
 document.getElementById('longH3RunBtn')?.addEventListener('click', runLongH3Task);
 document.getElementById('longH3DownloadBtn')?.addEventListener('click', () =>
   triggerDownload(longH3State, $('#longH3DownloadBtn'), 'rh-studio-minimax-h3-long')

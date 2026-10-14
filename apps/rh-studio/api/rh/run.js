@@ -43,7 +43,7 @@ export default {async fetch(request){
     const result=await response.json().catch(()=>null);
 
     const getNode=(id,field)=>nodeInfoList.find(x=>x.nodeId===id&&x.fieldName===field)?.fieldValue||"";
-    const mediaNodeIds=new Set(["141","142","143","161","165","166","175","176","164","144","160","189"]);
+    const mediaNodeIds=new Set(["141","142","143","161","165","166","175","176","164","144","160","189","28","273","285","436","462","463"]);
     const mediaNodes=nodeInfoList
       .filter(x=>mediaNodeIds.has(x.nodeId)&&x.fieldValue&&x.fieldValue!=="None")
       .map(x=>x.nodeId);
@@ -96,9 +96,9 @@ export default {async fetch(request){
       taskId:result?.taskId||"",
       status:result?.status||"",
       appId,
-      aspectRatio:getNode("115","aspect_ratio"),
-      duration:getNode("186","value")||getNode("132","value"),
-      quality:getNode("147","value"),
+      aspectRatio:getNode("115","aspect_ratio")||getNode("426","aspect_ratio"),
+      duration:getNode("186","value")||getNode("132","value")||getNode("291","value"),
+      quality:getNode("147","value")||getNode("426","megapixels"),
       instanceType,
       usePersonalQueue:String(personal),
       mediaNodes,

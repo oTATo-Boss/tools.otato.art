@@ -10,8 +10,10 @@ const context = {
 };
 runInNewContext(js, context);
 const build = (uploads, values) =>
-  runInNewContext('longH3BuildNodes(' + JSON.stringify(uploads) + ',' + JSON.stringify(values) + ')', context)
-    .map(row => JSON.parse(JSON.stringify(row)));
+  Array.from(
+    runInNewContext('longH3BuildNodes(' + JSON.stringify(uploads) + ',' + JSON.stringify(values) + ')', context),
+    row => JSON.parse(JSON.stringify(row))
+  );
 const node = (items, id, name) => items.find(item => item.nodeId === id && item.fieldName === name);
 
 test('six image nodes and exact application defaults', () => {
@@ -53,4 +55,20 @@ test('invalid prompt, duration, pixels, and ratio fail before upload', () => {
     {prompt:'test', duration:'3.5'},{prompt:'test',megapixels:'0'},
     {prompt:'test',aspect:'unknown'}
   ]) assert.throws(()=>build({},values));
+});
+
+test('navigation, runtime recovery, six upload slots and bundle registration are wired', () => {
+  const app = readFileSync(new URL('../apps/rh-studio/app.js', import.meta.url), 'utf8');
+  const html = readFileSync(new URL('../apps/rh-studio/index.html', import.meta.url), 'utf8');
+  const buildScript = readFileSync(new URL('../apps/rh-studio/build.mjs', import.meta.url), 'utf8');
+  assert.match(app, /appId:'2103012816681041921'/);
+  assert.match(app, /\[APP_KEYS\.longH3\]:/);
+  assert.match(app, /restoreLongH3Images\(\)/);
+  assert.match(html, /data-app="minimax-h3-long"/);
+  assert.match(html, /id="workspaceLongH3"/);
+  for (const id of ['28','273','285','436','462','463']) {
+    assert.match(html, new RegExp('data-slot="longH3Img' + id + '"'));
+  }
+  assert.match(html, /minimax-h3-long\.js\?v=/);
+  assert.match(buildScript, /minimax-h3-long\.js/);
 });
