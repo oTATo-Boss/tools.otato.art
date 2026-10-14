@@ -44,3 +44,13 @@ unchanged, but browsers isolate this data by origin. Data saved on the previous
 RH Studio domain remains there and is not automatically copied to
 `tools.otato.art`. Enter the API Key again in the new site's settings and use
 Task ID import to recover existing tasks as needed.
+
+
+## 新接入应用：Minimax-H3 长视频小白全能版
+
+- 应用键：minimax-h3-long，AI App ID：2103012816681041921。
+- 页面组件在 index.html，逻辑和节点映射独立于 minimax-h3-long.js。
+- 与现有应用共用 /rh-studio/api/rh/* 及 /rh-studio/rh-upload，无需添加独立 Pages Functions。
+- 6 图输入独立保存于当前浏览器的 rhstudio-minimax-h3-long-materials IndexedDB；
+  控制参数使用 rhstudio.minimaxH3Long.config localStorage。
+- 新增单元测试：tests/rh-studio-minimax-h3-long.test.mjs。

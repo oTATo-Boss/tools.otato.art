@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>RH Studio</title>
 <meta name="description" content="RunningHub multi-app AI workspace" />
-<link rel="stylesheet" href="./style.css?v=unified-media-preview-2">
+<link rel="stylesheet" href="./style.css?v=20261015-long-h3">
 
 <style id="prompt-settings-feature-styles">
 .prompt-head-actions{align-self:center;display:flex;align-items:center;gap:8px}
@@ -317,6 +317,16 @@
           <div class="app-copy">
             <strong>MinimaxH3多图生视频</strong>
             <span>加速版</span>
+          </div>
+          <i class="active-dot"></i>
+        </button>
+
+
+        <button class="app-item" data-app="minimax-h3-long" type="button">
+          <div class="app-icon">H3</div>
+          <div class="app-copy">
+            <strong>Minimax-H3 无限长视频自动提示词</strong>
+            <span>小白全能版</span>
           </div>
           <i class="active-dot"></i>
         </button>
@@ -1037,6 +1047,128 @@
     </div>
 
 
+
+    <div id="workspaceLongH3" class="workspace app-workspace hidden">
+      <div class="workspace-top">
+        <section class="asset-panel glass">
+          <div class="panel-head">
+            <div><span>REFERENCE INPUTS</span><h2>参考图片</h2></div>
+            <b>6 INPUTS</b>
+          </div>
+          <div class="image-grid">
+            <button class="upload-slot image-slot" data-slot="longH3Img28" type="button">
+              <input type="file" accept="image/*" hidden>
+              <div class="media-preview"><span>01</span><i>＋</i></div>
+              <div class="media-caption"><strong>参考图 1</strong><small>IMAGE</small></div>
+              <em class="slot-clear hidden">×</em>
+            </button>
+            <button class="upload-slot image-slot" data-slot="longH3Img273" type="button">
+              <input type="file" accept="image/*" hidden>
+              <div class="media-preview"><span>02</span><i>＋</i></div>
+              <div class="media-caption"><strong>参考图 2</strong><small>IMAGE</small></div>
+              <em class="slot-clear hidden">×</em>
+            </button>
+            <button class="upload-slot image-slot" data-slot="longH3Img285" type="button">
+              <input type="file" accept="image/*" hidden>
+              <div class="media-preview"><span>03</span><i>＋</i></div>
+              <div class="media-caption"><strong>参考图 3</strong><small>IMAGE</small></div>
+              <em class="slot-clear hidden">×</em>
+            </button>
+            <button class="upload-slot image-slot" data-slot="longH3Img436" type="button">
+              <input type="file" accept="image/*" hidden>
+              <div class="media-preview"><span>04</span><i>＋</i></div>
+              <div class="media-caption"><strong>参考图 4</strong><small>IMAGE</small></div>
+              <em class="slot-clear hidden">×</em>
+            </button>
+            <button class="upload-slot image-slot" data-slot="longH3Img462" type="button">
+              <input type="file" accept="image/*" hidden>
+              <div class="media-preview"><span>05</span><i>＋</i></div>
+              <div class="media-caption"><strong>参考图 5</strong><small>IMAGE</small></div>
+              <em class="slot-clear hidden">×</em>
+            </button>
+            <button class="upload-slot image-slot" data-slot="longH3Img463" type="button">
+              <input type="file" accept="image/*" hidden>
+              <div class="media-preview"><span>06</span><i>＋</i></div>
+              <div class="media-caption"><strong>参考图 6</strong><small>IMAGE</small></div>
+              <em class="slot-clear hidden">×</em>
+            </button>
+          </div>
+          <p class="long-h3-upload-note">支持点击上传或 Cmd / Ctrl + V 依次填入空位。图片保存在当前浏览器。</p>
+        </section>
+        <section class="output-panel glass">
+          <div class="panel-head output-head">
+            <div><span>VIDEO OUTPUT</span><h2>视频预览</h2></div>
+            <div class="output-head-actions">
+              <div class="status-pill">
+                <i id="longH3StatusDot" class="status-dot"></i>
+                <div><strong id="longH3StatusText">等待生成</strong><span id="longH3TaskMeta">READY</span></div>
+              </div>
+              <button id="longH3DownloadBtn" class="download-btn" type="button" disabled><span>下载</span><b>↓</b></button>
+            </div>
+          </div>
+          <div class="image-preview-shell">
+            <div id="longH3ResultArea" class="image-preview-stage video-preview-stage">
+              <div class="empty-state"><div class="empty-mark">▶</div><strong>准备生成视频</strong></div>
+            </div>
+          </div>
+          <div id="longH3ExtraResults" class="long-h3-extra-results hidden"></div>
+        </section>
+      </div>
+      <div class="workspace-bottom">
+        <section class="prompt-panel glass">
+          <div class="panel-head compact-head">
+            <div><span>PROMPT</span><h2>视频提示词</h2></div>
+            <div class="prompt-head-actions"><b id="longH3PromptCount">0</b></div>
+          </div>
+          <textarea id="longH3PromptInput" data-long-h3-field="prompt" placeholder="按时间顺序描述场景、人物动作、镜头、台词和音效……"></textarea>
+        </section>
+        <section class="operation-panel glass long-h3-operation">
+          <div class="panel-head compact-head operation-head">
+            <div><span>GENERATION CONTROL</span><h2>生成设置</h2></div>
+            <div class="workflow-state compact-state"><i></i><span>MINIMAX H3</span></div>
+          </div>
+          <div class="operation-grid">
+            <label class="operation-field">
+              <span>画面比例</span>
+              <select data-long-h3-field="aspect" id="longH3AspectRatio"><option value="1:1 (Square)">1:1</option>
+<option value="2:3 (Portrait Photo)">2:3</option>
+<option value="3:2 (Photo)">3:2</option>
+<option value="3:4 (Portrait Standard)">3:4</option>
+<option value="4:3 (Standard)">4:3</option>
+<option value="9:16 (Portrait Widescreen)">9:16</option>
+<option value="16:9 (Widescreen)" selected>16:9</option>
+<option value="21:9 (Ultrawide)">21:9</option></select>
+            </label>
+            <label class="operation-field">
+              <span>时长 · 秒 (Node 291)</span>
+              <input data-long-h3-field="duration" type="number" min="1" step="1" value="35">
+            </label>
+            <label class="operation-field">
+              <span>像素 · MP (Node 426)</span>
+              <input data-long-h3-field="megapixels" type="number" min="0.01" step="0.1" value="0.5">
+            </label>
+            <div class="image-fixed-field"><span>运行实例</span><strong>使用全局设置</strong></div>
+          </div>
+          <details class="long-h3-advanced">
+            <summary>高级参数 <span>LoRA / 工作流节点</span></summary>
+            <div class="long-h3-advanced-grid">
+              <label><span>LoRA 446 · 权重</span><input data-long-h3-field="strength446" type="number" step="0.05" value="0.4"></label>
+              <label><span>LoRA 444 · 权重</span><input data-long-h3-field="strength444" type="number" step="0.05" value="0.5"></label>
+              <label><span>LoRA 443 · 权重</span><input data-long-h3-field="strength443" type="number" step="0.05" value="0.6"></label>
+              <label><span>节点 442 · 文本</span><input data-long-h3-field="text442" type="text" value="dynv2,"></label>
+              <label><span>节点 393 · 开关</span><select data-long-h3-field="flag393"><option value="false">false</option><option value="true">true</option></select></label>
+              <label><span>节点 272 · 开关</span><select data-long-h3-field="flag272"><option value="false">false</option><option value="true">true</option></select></label>
+            </div>
+            <p>LoRA 模型名称采用该 RunningHub 工作流提供的默认配置。</p>
+          </details>
+          <div class="operation-foot">
+            <button id="longH3RunBtn" class="generate-btn" type="button"><span id="longH3RunLabel">开始生成</span><b>↗</b></button>
+          </div>
+          <small class="long-h3-expiry">输出文件链接有效期约 24 小时，请及时下载。</small>
+        </section>
+      </div>
+    </div>
+
     <div id="workspaceMultiFast" class="workspace app-workspace hidden">
       <div class="workspace-top">
         <section class="asset-panel glass">
@@ -1379,7 +1511,8 @@
 </div>
 
 <div id="toast" class="toast"></div>
-<script src="./app.js?v=clipboard-sequential-upload-v1"></script>
+<script src="./minimax-h3-long.js?v=20261015-1"></script>
+<script src="./app.js?v=20261015-long-h3"></script>
 
 <script src="./persona-random.js?v=persona-image-v2"></script>
 

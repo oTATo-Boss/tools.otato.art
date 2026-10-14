@@ -837,3 +837,37 @@ select,.input{width:100%;height:38px;border:1px solid var(--line);border-radius:
   .skin-control-panel .image-workflow-state,
   .skin-control-panel .image-generate-btn{grid-column:1}
 }
+
+
+/* Minimax-H3 长视频工作流：继承 RH Studio 四区与 Graphite 视觉。 */
+#workspaceLongH3 .long-h3-operation{overflow-y:auto;scrollbar-width:thin}
+#workspaceLongH3 .operation-field input,
+#workspaceLongH3 .long-h3-advanced input,
+#workspaceLongH3 .long-h3-advanced select{
+  box-sizing:border-box;width:100%;height:34px;border:1px solid var(--line);border-radius:11px;
+  color:var(--text,#ebe3d9);background:rgba(7,7,7,.45);font-size:10px;
+  outline:none;padding:0 9px;color-scheme:dark
+}
+#workspaceLongH3 .operation-field input:focus,
+#workspaceLongH3 .long-h3-advanced input:focus{border-color:rgba(255,179,92,.38)}
+#workspaceLongH3 .long-h3-advanced{margin-top:7px;border:1px solid var(--line);border-radius:11px;background:rgba(255,255,255,.016)}
+#workspaceLongH3 .long-h3-advanced summary{display:flex;justify-content:space-between;gap:6px;align-items:center;cursor:pointer;color:#c7b4a0;padding:8px 10px;font-size:9px;list-style:none}
+#workspaceLongH3 .long-h3-advanced summary::-webkit-details-marker{display:none}
+#workspaceLongH3 .long-h3-advanced summary span{font-size:7px;color:#857b70}
+#workspaceLongH3 .long-h3-advanced-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;padding:4px 9px}
+#workspaceLongH3 .long-h3-advanced-grid label{display:grid;gap:5px;min-width:0}
+#workspaceLongH3 .long-h3-advanced-grid label span{font-size:8px;color:#999087}
+#workspaceLongH3 .long-h3-advanced p{margin:3px 9px 9px;font-size:7px;color:#8b8177;line-height:1.45}
+#workspaceLongH3 .long-h3-upload-note{margin:8px 2px 0;font-size:8px;color:#8a8075;line-height:1.45}
+#workspaceLongH3 .long-h3-expiry{display:block;margin-top:6px;font-size:8px;color:#84786d;line-height:1.4}
+#workspaceLongH3 .long-h3-extra-results{display:flex;gap:6px;flex-wrap:wrap;padding:8px 0 0}
+#workspaceLongH3 .long-h3-extra-results.hidden{display:none}
+#workspaceLongH3 .long-h3-extra-results>a,#workspaceLongH3 .long-h3-extra-results>span{
+  padding:5px 8px;border:1px solid var(--line);border-radius:9px;text-decoration:none;
+  color:#d4aa80;background:rgba(255,255,255,.025);font-size:8px
+}
+#workspaceLongH3 .long-h3-text-output{box-sizing:border-box;max-width:100%;max-height:100%;white-space:pre-wrap;overflow:auto;color:var(--text,#e8e0d7);padding:15px;font-size:12px}
+@media(max-width:720px){
+  #workspaceLongH3 .long-h3-operation{overflow:visible}
+  #workspaceLongH3 .long-h3-upload-note{font-size:10px}
+}
