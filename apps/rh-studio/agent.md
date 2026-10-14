@@ -611,3 +611,19 @@ Cloudflare Pages 静态资源与 Pages Functions 必须同时承载：
 - Prompt 模板必须同时保留 `{{clothes}}`、`{{performance}}`、`{{action}}` 三个变量。
 
 随机系统实现集中在 `persona-random.js`。后续扩充审美和行为差异应优先扩展 Persona、服装池、Action / Signature / Expression / Reaction / Human Noise / Arc 数据，不重新建立互不关联的独立随机脚本。
+
+
+### 14.10 Minimax-H3 无限长视频自动提示词-小白全能版
+
+- appKey: minimax-h3-long；类别 video。
+- RunningHub AI App ID：2103012816681041921；使用已有 /rh-studio/api/rh/run、查询和上传代理。
+- 参考图片 1～6：Node 28 / 273 / 285 / 436 / 462 / 463，字段 image；独立媒体槽与 IndexedDB 存储，空槽提交 None。
+- 主文本：Node 59 / prompt（初始为空，由用户填写）。
+- 画面比例：Node 426 / aspect_ratio，API 示例中的八种选项，默认 16:9 (Widescreen)。
+- 像素参数：Node 426 / megapixels，默认 0.5。
+- 时长数值：Node 291 / value，默认 35。可成功运行范围取决于远端工作流，并非承诺无限时长。
+- LoRA：Node 446 / 444 / 443，模型名称与默认权重严格使用该 AI App 的 API 示例；权重在高级设置中可调。
+- 高级节点：Node 442 / text 默认 dynv2,；Node 393 / value 和 Node 272 / value 默认 false。这些节点的业务含义未确认，仅按 Node ID 展示。
+- API Key、运行实例、任务历史、失败诊断和媒体输出预览共享 RH Studio 现有系统。
+- 工作区遵循四区布局，支持粘贴连续填入 6 张图片，生成任务刷新后恢复。
+- 结果文件 URL 约 24 小时过期，浏览器任务记录不是媒体文件云存储。

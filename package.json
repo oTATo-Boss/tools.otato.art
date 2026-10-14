@@ -9,7 +9,7 @@
   "scripts": {
     "build": "node scripts/build.mjs",
     "dev:rh-studio": "cd apps/rh-studio && node server.js",
-    "test:rh-studio": "node --test tests/rh-studio-migration.test.mjs"
+    "test:rh-studio": "node --test tests/rh-studio-*.test.mjs"
   },
   "dependencies": {
     "react": "19.2.6",
