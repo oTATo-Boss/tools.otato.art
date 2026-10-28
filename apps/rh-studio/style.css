@@ -884,13 +884,6 @@ select,.input{width:100%;height:38px;border:1px solid var(--line);border-radius:
 #workspaceH3V2 .audio-grid{min-height:0}
 #workspaceH3V2 .h3-v2-operation{overflow-y:auto;scrollbar-width:thin}
 #workspaceH3V2 .operation-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
-#workspaceH3V2 .h3-v2-duration-field{grid-column:1/-1}
-#workspaceH3V2 .h3-v2-duration-field input{
-  width:100%;height:34px;box-sizing:border-box;background:rgba(7,7,7,.45);
-  color:#e8e0d5;border:1px solid var(--line);border-radius:10px;
-  padding:0 9px;outline:none;font-size:10px;color-scheme:dark
-}
-#workspaceH3V2 .h3-v2-duration-field input:focus{border-color:rgba(255,179,92,.38)}
 #workspaceH3V2 .h3-v2-extra-results{display:flex;flex-wrap:wrap;gap:6px;padding:8px 0 0}
 #workspaceH3V2 .h3-v2-extra-results.hidden{display:none}
 #workspaceH3V2 .h3-v2-extra-results>a,#workspaceH3V2 .h3-v2-extra-results>span{

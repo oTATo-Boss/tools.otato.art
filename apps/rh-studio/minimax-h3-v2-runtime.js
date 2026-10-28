@@ -14,6 +14,18 @@ function h3V2ReadConfig(){
 function h3V2UpdateUI(){
   const prompt=$('#h3V2PromptInput'),count=$('#h3V2PromptCount');
   if(prompt&&count)count.textContent=String(prompt.value.length);
+  const slider=$('#h3V2DurationRange');
+  const display=$('#h3V2DurationValue');
+  if(slider&&display){
+    const min=Number(slider.min||5);
+    const max=Number(slider.max||15);
+    const raw=Number(slider.value);
+    const value=Math.min(max,Math.max(min,Number.isFinite(raw)?Math.round(raw):15));
+    if(Number(slider.value)!==value)slider.value=String(value);
+    display.textContent=value+'s';
+    const pct=max>min?(value-min)/(max-min)*100:0;
+    slider.style.background='linear-gradient(90deg,var(--accent) '+pct+'%,rgba(255,255,255,.08) '+pct+'%)';
+  }
 }
 function h3V2LoadConfig(){
   let saved={};
