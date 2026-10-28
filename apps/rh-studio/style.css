@@ -878,36 +878,19 @@ select,.input{width:100%;height:38px;border:1px solid var(--line);border-radius:
 }
 
 
-/* MiniMax-H3 V2：RH Studio 原有四区结构与 Graphite 视觉。 */
+/* MiniMax-H3 V2: three generation controls, shared graphite design. */
 #workspaceH3V2 .asset-panel{grid-template-rows:48px minmax(0,1fr) 85px 48px}
 #workspaceH3V2 .h3-v2-asset-note{align-self:center;overflow:auto;margin:0 2px;color:#8c8177;font-size:9px;line-height:1.55}
 #workspaceH3V2 .audio-grid{min-height:0}
 #workspaceH3V2 .h3-v2-operation{overflow-y:auto;scrollbar-width:thin}
-#workspaceH3V2 .operation-field input,#workspaceH3V2 .h3-v2-advanced input,#workspaceH3V2 .h3-v2-advanced select{
+#workspaceH3V2 .operation-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+#workspaceH3V2 .h3-v2-duration-field{grid-column:1/-1}
+#workspaceH3V2 .h3-v2-duration-field input{
   width:100%;height:34px;box-sizing:border-box;background:rgba(7,7,7,.45);
   color:#e8e0d5;border:1px solid var(--line);border-radius:10px;
   padding:0 9px;outline:none;font-size:10px;color-scheme:dark
 }
-#workspaceH3V2 .operation-field input:focus,#workspaceH3V2 .h3-v2-advanced input:focus{border-color:rgba(255,179,92,.38)}
-#workspaceH3V2 .operation-field.hidden{display:none!important}
-#workspaceH3V2 .h3-v2-quality-note{color:#93877a;font-size:8px;margin-top:7px;line-height:1.5}
-#workspaceH3V2 .h3-v2-advanced{
-  margin-top:8px;border:1px solid var(--line);border-radius:12px;
-  background:rgba(255,255,255,.018);flex:0 0 auto
-}
-#workspaceH3V2 .h3-v2-advanced summary{
-  cursor:pointer;list-style:none;color:#c7b7a2;font-size:10px;
-  padding:10px;display:flex;gap:10px;justify-content:space-between
-}
-#workspaceH3V2 .h3-v2-advanced summary::-webkit-details-marker{display:none}
-#workspaceH3V2 .h3-v2-advanced summary span{color:#887b6e;font-size:8px}
-#workspaceH3V2 .h3-v2-advanced-content{display:grid;gap:8px;padding:0 10px 10px}
-#workspaceH3V2 .h3-v2-lora{display:grid;grid-template-columns:minmax(0,1fr) 68px;gap:7px}
-#workspaceH3V2 .h3-v2-lora label,#workspaceH3V2 .h3-v2-advanced label{display:grid;min-width:0;gap:5px}
-#workspaceH3V2 .h3-v2-lora span,#workspaceH3V2 .h3-v2-advanced label>span{color:#a3978b;font-size:9px}
-#workspaceH3V2 .h3-v2-advanced-grid{display:grid;grid-template-columns:1fr 1fr;gap:7px}
-#workspaceH3V2 .h3-v2-advanced p{font-size:8px;color:#8a7f74;line-height:1.5;margin:3px 0 0}
-#workspaceH3V2 .h3-v2-expiry{display:block;margin-top:7px;color:#918478;font-size:8px;line-height:1.4}
+#workspaceH3V2 .h3-v2-duration-field input:focus{border-color:rgba(255,179,92,.38)}
 #workspaceH3V2 .h3-v2-extra-results{display:flex;flex-wrap:wrap;gap:6px;padding:8px 0 0}
 #workspaceH3V2 .h3-v2-extra-results.hidden{display:none}
 #workspaceH3V2 .h3-v2-extra-results>a,#workspaceH3V2 .h3-v2-extra-results>span{

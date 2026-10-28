@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>RH Studio</title>
 <meta name="description" content="RunningHub multi-app AI workspace" />
-<link rel="stylesheet" href="./style.css?v=20261029-h3-v2">
+<link rel="stylesheet" href="./style.css?v=20261029-h3-v2-controls">
 
 <style id="prompt-settings-feature-styles">
 .prompt-head-actions{align-self:center;display:flex;align-items:center;gap:8px}
@@ -1152,74 +1152,29 @@
             <div><span>GENERATION CONTROL</span><h2>生成设置</h2></div>
             <div class="workflow-state compact-state"><i></i><span>SKILL v4 · V2</span></div>
           </div>
+
           <div class="operation-grid">
             <label class="operation-field">
               <span>比例</span>
               <select id="h3V2Aspect" data-h3-v2-field="aspect"><option value="1:1 (Square)">1:1</option><option value="2:3 (Portrait Photo)">2:3</option><option value="3:2 (Photo)">3:2</option><option value="3:4 (Portrait Standard)">3:4</option><option value="4:3 (Standard)">4:3</option><option value="9:16 (Portrait Widescreen)" selected>9:16</option><option value="16:9 (Widescreen)">16:9</option><option value="21:9 (Ultrawide)">21:9</option></select>
             </label>
             <label class="operation-field">
-              <span>画质档位</span>
+              <span>分辨率</span>
               <select id="h3V2Quality" data-h3-v2-field="quality">
-                <option value="480P">480P · 0.5 MP</option>
-                <option value="720P" selected>720P · 1 MP</option>
-                <option value="1080P">1080P · 2 MP</option>
-                <option value="custom">自定义 MP</option>
+                <option value="480P">480P</option>
+                <option value="720P" selected>720P</option>
+                <option value="1080P">1080P</option>
               </select>
             </label>
-            <label class="operation-field">
+            <label class="operation-field h3-v2-duration-field">
               <span>时长 · 秒</span>
               <input data-h3-v2-field="duration" type="number" min="5" max="15" step="1" value="15">
             </label>
-            <label class="operation-field">
-              <span>运行实例</span>
-              <select id="h3V2Instance" data-h3-v2-field="instance">
-                <option value="default">Default · 24G</option>
-                <option value="plus" selected>Plus · 48G</option>
-                <option value="ultra">Ultra · 84G</option>
-              </select>
-            </label>
-            <label id="h3V2CustomMPField" class="operation-field hidden">
-              <span>自定义 MP</span>
-              <input data-h3-v2-field="customMegapixels" type="number" min="0.1" max="16" step="0.1" value="1">
-            </label>
           </div>
-          <span id="h3V2QualityNote" class="h3-v2-quality-note">目标 1.0 MP · 实际宽高由工作流决定</span>
-          <details class="h3-v2-advanced">
-            <summary>高级参数 <span>4 × LoRA · 触发词 · 工作流开关</span></summary>
-            <div class="h3-v2-advanced-content">
-              <div class="h3-v2-lora">
-                <label><span>LoRA 1 · 模型名</span><input data-h3-v2-field="lora1Name" value="MysticXXX_MMH3-V5.1.safetensors" type="text"></label>
-                <label><span>权重</span><input data-h3-v2-field="lora1Strength" value="0.4" type="number" step="0.05" min="-100" max="100"></label>
-              </div>
-              <div class="h3-v2-lora">
-                <label><span>LoRA 2 · 模型名</span><input data-h3-v2-field="lora2Name" value="Minimax-H3-Digicam-Realism Improve Lora.safetensors" type="text"></label>
-                <label><span>权重</span><input data-h3-v2-field="lora2Strength" value="0.5" type="number" step="0.05" min="-100" max="100"></label>
-              </div>
-              <div class="h3-v2-lora">
-                <label><span>LoRA 3 · 模型名</span><input data-h3-v2-field="lora3Name" value="h3-realism-people-t2v-i2v-r2v_new.safetensors" type="text"></label>
-                <label><span>权重</span><input data-h3-v2-field="lora3Strength" value="0.5" type="number" step="0.05" min="-100" max="100"></label>
-              </div>
-              <div class="h3-v2-lora">
-                <label><span>LoRA 4 · 模型名</span><input data-h3-v2-field="lora4Name" value="H3电影感V2.safetensors" type="text"></label>
-                <label><span>权重</span><input data-h3-v2-field="lora4Strength" value="0.5" type="number" step="0.05" min="-100" max="100"></label>
-              </div>
-              <label class="h3-v2-wide"><span>LoRA 触发词 · Node 816</span><input type="text" data-h3-v2-field="trigger" value="dynv2,r34l1sm"></label>
-              <div class="h3-v2-advanced-grid">
-                <label><span>版本节点 · 881</span>
-                  <select data-h3-v2-field="versionSwitch"><option value="true" selected>true</option><option value="false">false</option></select>
-                </label>
-                <label><span>输出格式 · 824</span>
-                  <select data-h3-v2-field="outputFormat"><option value="video" selected>视频</option><option value="zip">ZIP · 未验证</option></select>
-                </label>
-              </div>
-              <p>以上四组 LoRA 及画质档位尚未在当前应用完整实测。版本开关的具体含义待确认。</p>
-            </div>
-          </details>
           <div class="operation-foot">
             <button id="h3V2RunBtn" class="generate-btn" type="button"><span id="h3V2RunLabel">开始生成</span><b>↗</b></button>
           </div>
-          <small class="h3-v2-expiry">1080P / 2 MP 及以上需手动选择 Ultra；生成文件链接通常 24 小时失效。</small>
-        </section>
+</section>
       </div>
     </div>
 
@@ -1686,8 +1641,8 @@
 </div>
 
 <div id="toast" class="toast"></div>
-<script src="./minimax-h3-v2-config.js?v=20261029-1"></script>
-<script src="./minimax-h3-v2-runtime.js?v=20261029-1"></script>
+<script src="./minimax-h3-v2-config.js?v=20261029-2"></script>
+<script src="./minimax-h3-v2-runtime.js?v=20261029-2"></script>
 <script src="./minimax-h3-long.js?v=20261015-1"></script>
 <script src="./app.js?v=20261029-h3-v2"></script>
 
