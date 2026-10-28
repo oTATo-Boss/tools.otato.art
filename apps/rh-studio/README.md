@@ -54,3 +54,14 @@ Task ID import to recover existing tasks as needed.
 - 6 图输入独立保存于当前浏览器的 rhstudio-minimax-h3-long-materials IndexedDB；
   控制参数使用 rhstudio.minimaxH3Long.config localStorage。
 - 新增单元测试：tests/rh-studio-minimax-h3-long.test.mjs。
+
+
+## MiniMax-H3 V2 beginner app · Skill 4.0.0
+
+- Skill snapshot: https://github.com/oTATo-Boss/my-skills/tree/main/skills/video/ai/rh-minimax-h3
+- AI App ID: `2101232638873858050`; RH Studio app key: `minimax-h3-beginner-v2`.
+- Uses `minimax-h3-v2-config.js` (25 nodes) and `minimax-h3-v2-runtime.js` (uploads, polling, results, browser persistence). Unlike the long-video app, this workflow generates 5–15-second clips.
+- Inputs: 1–6 images, up to 2 audio files. Empty image nodes repeat the last supplied image; Node 827 records the true image count.
+- Controls: 8 aspect ratios, 480P/720P/1080P mapped to 0.5/1/2 MP, default Plus instance with 2MP+ requiring manual Ultra, 4 LoRAs, trigger, and advanced workflow flags.
+- Output URLs normally expire after 24 hours. Video generation and the new LoRA combination have not been live-verified.
+- Tests: `tests/rh-studio-minimax-h3-v2.test.mjs`.

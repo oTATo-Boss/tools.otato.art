@@ -627,3 +627,18 @@ Cloudflare Pages 静态资源与 Pages Functions 必须同时承载：
 - API Key、运行实例、任务历史、失败诊断和媒体输出预览共享 RH Studio 现有系统。
 - 工作区遵循四区布局，支持粘贴连续填入 6 张图片，生成任务刷新后恢复。
 - 结果文件 URL 约 24 小时过期，浏览器任务记录不是媒体文件云存储。
+
+
+### 14.11 MiniMax-H3 多图生视频自动提示词 V2－小白全能版（Skill 4.0.0）
+
+- `appKey`：`minimax-h3-beginner-v2`，`type: video`，RunningHub AI App ID：`2101232638873858050`。
+- 唯一权威来源为 `oTATo-Boss/my-skills/skills/video/ai/rh-minimax-h3` 的 v4.0.0（2026-10-28）`SKILL.md` 和 `references/node_map.json`；保存本次 25 项参数快照在 `minimax-h3-v2-config.js`，运行逻辑在 `minimax-h3-v2-runtime.js`。
+- 六图 Node 438、435、437、439、431、429；按实际输入顺序压缩到前几个槽，空图片槽复用最后一张真实图片，Node 827 / value = 真实图片数量。至少 1 张图片，纯文生未验证。
+- 可选双音频 Node 841、842；空音频字段传 `None`。
+- Prompt Node 456 / text；时长 Node 804 / value = 5–15 秒，默认 15；画幅 Node 462 / aspect_ratio 支持八种真实枚举，默认 9:16。
+- Node 462 / megapixels：480P = 0.5 MP，720P = 1 MP，1080P = 2 MP（默认 720P，实际输出像素由生成结果决定）；也允许用户手动指定 MP。
+- Node 881 / value = true（默认工作流标志、具体版本含义未证实）；Node 774 / unet_name = `minimax_h3_hybrid_fl2va_ref2va_b25-49-int8_r.safetensors`；Node 824 / value = false 为视频输出，ZIP 为实验选项。
+- 四组 LoRA：Node 813 / 817 / 815 / 888；默认分别为 `MysticXXX_MMH3-V5.1.safetensors`(0.4)、`Minimax-H3-Digicam-Realism Improve Lora.safetensors`(0.5)、`h3-realism-people-t2v-i2v-r2v_new.safetensors`(0.5)、`H3电影感V2.safetensors`(0.5)；Node 816 / text 默认 `dynv2,r34l1sm`。
+- 该 Skill 规定默认 Plus 实例，1080P / ≥2 MP 使用 Ultra。为忠实复用其配置，本应用单独提供**手动实例选择**（默认 Plus），≥2 MP 非 Ultra 时提交前阻止；不会自动改动其他应用的全局实例设置。此条属于 §5.2 的本应用例外。
+- 输入文件及参数分别保存在独立 IndexedDB `rhstudio-minimax-h3-v2-materials`、LocalStorage `rhstudio.minimaxH3BeginnerV2.config`；共用 RH Studio 全局 API Key、Cloudflare 上传/查询代理、历史、故障诊断与任务恢复。
+- 本工作流不提供可确认的独立优化开关、采样步数、种子及视频参考节点；4 LoRA 组合及三档画质尚未在本应用实测，不可将静态校验或构建成功描述为真实视频生成。
