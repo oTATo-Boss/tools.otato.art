@@ -121,3 +121,44 @@ test('UI exposes exactly aspect, resolution, duration; global settings controls 
   assert.match(pack,/minimax-h3-v2-config\.js/);
   assert.match(pack,/minimax-h3-v2-runtime\.js/);
 });
+
+
+test('H3 V2 duration uses the shared video slider with live value and saved configuration',()=>{
+  const html=read('apps/rh-studio/index.html');
+  const runtime=read('apps/rh-studio/minimax-h3-v2-runtime.js');
+  const css=read('apps/rh-studio/style.css');
+  const start=html.indexOf('id="workspaceH3V2"');
+  const end=html.indexOf('id="workspaceLongH3"',start);
+  assert.ok(start>0&&end>start);
+  const workspace=html.slice(start,end);
+  assert.match(workspace,/class="duration-control"/);
+  assert.match(workspace,/class="duration-head"/);
+  assert.match(workspace,/class="duration-scale"/);
+  assert.match(workspace,/id="h3V2DurationValue">15s/);
+  assert.match(workspace,/<input id="h3V2DurationRange" data-h3-v2-field="duration" type="range" min="5" max="15" step="1" value="15">/);
+  assert.doesNotMatch(workspace,/data-h3-v2-field="duration" type="number"/);
+  assert.match(runtime,/el.addEventListener\('input',h3V2SaveConfig\)/);
+  assert.match(runtime,/localStorage.setItem\(LS.h3V2Config,JSON.stringify\(h3V2ReadConfig\(\)\)\)/);
+  assert.match(css,/\.duration-control input\[type="range"\]/);
+  const updateSource=runtime.match(/function h3V2UpdateUI\(\)\{[\s\S]*?\n\}/)?.[0];
+  assert.ok(updateSource);
+  const slider={min:'5',max:'15',value:'7',style:{}};
+  const display={textContent:''};
+  const prompt={value:'prompt'};
+  const counter={textContent:''};
+  const elements={
+    '#h3V2PromptInput':prompt,
+    '#h3V2PromptCount':counter,
+    '#h3V2DurationRange':slider,
+    '#h3V2DurationValue':display
+  };
+  const $=selector=>elements[selector]??null;
+  runInNewContext(updateSource+'\nh3V2UpdateUI();',{$});
+  assert.equal(display.textContent,'7s');
+  assert.match(slider.style.background,/20%/);
+  assert.equal(counter.textContent,'6');
+  slider.value='15';
+  runInNewContext(updateSource+'\nh3V2UpdateUI();',{$});
+  assert.equal(display.textContent,'15s');
+  assert.match(slider.style.background,/100%/);
+});

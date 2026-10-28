@@ -635,7 +635,7 @@ Cloudflare Pages 静态资源与 Pages Functions 必须同时承载：
 - 唯一权威来源为 `oTATo-Boss/my-skills/skills/video/ai/rh-minimax-h3` 的 v4.0.0（2026-10-28）`SKILL.md` 和 `references/node_map.json`；保存本次 25 项参数快照在 `minimax-h3-v2-config.js`，运行逻辑在 `minimax-h3-v2-runtime.js`。
 - 六图 Node 438、435、437、439、431、429；按实际输入顺序压缩到前几个槽，空图片槽复用最后一张真实图片，Node 827 / value = 真实图片数量。至少 1 张图片，纯文生未验证。
 - 可选双音频 Node 841、842；空音频字段传 `None`。
-- Prompt Node 456 / text；时长 Node 804 / value = 5–15 秒，默认 15；画幅 Node 462 / aspect_ratio 支持八种真实枚举，默认 9:16。
+- Prompt Node 456 / text；时长 Node 804 / value = 5–15 秒，默认 15；画幅 Node 462 / aspect_ratio 支持八种真实枚举，默认 9:16。时长统一使用现有视频应用的 `.duration-control` 滑条样式，步长 1 秒，拖动实时显示数值并保存设置。
 - Node 462 / megapixels：分辨率下拉仅有 480P = 0.5 MP、720P = 1 MP、1080P = 2 MP（默认 720P），实际像素由生成结果决定。
 - Node 881 / value = true（默认工作流标志、具体版本含义未证实）；Node 774 / unet_name = `minimax_h3_hybrid_fl2va_ref2va_b25-49-int8_r.safetensors`；Node 824 / value = false 为视频输出，ZIP 为实验选项。
 - 四组 LoRA：Node 813 / 817 / 815 / 888；默认分别为 `MysticXXX_MMH3-V5.1.safetensors`(0.4)、`Minimax-H3-Digicam-Realism Improve Lora.safetensors`(0.5)、`h3-realism-people-t2v-i2v-r2v_new.safetensors`(0.5)、`H3电影感V2.safetensors`(0.5)；Node 816 / text 默认 `dynv2,r34l1sm`。

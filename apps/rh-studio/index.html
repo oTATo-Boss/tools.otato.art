@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>RH Studio</title>
 <meta name="description" content="RunningHub multi-app AI workspace" />
-<link rel="stylesheet" href="./style.css?v=20261029-h3-v2-controls">
+<link rel="stylesheet" href="./style.css?v=20261029-h3-v2-slider-1">
 
 <style id="prompt-settings-feature-styles">
 .prompt-head-actions{align-self:center;display:flex;align-items:center;gap:8px}
@@ -1166,10 +1166,14 @@
                 <option value="1080P">1080P</option>
               </select>
             </label>
-            <label class="operation-field h3-v2-duration-field">
-              <span>时长 · 秒</span>
-              <input data-h3-v2-field="duration" type="number" min="5" max="15" step="1" value="15">
-            </label>
+          </div>
+          <div class="duration-control">
+            <div class="duration-head">
+              <span>时长</span>
+              <b id="h3V2DurationValue">15s</b>
+            </div>
+            <input id="h3V2DurationRange" data-h3-v2-field="duration" type="range" min="5" max="15" step="1" value="15">
+            <div class="duration-scale"><span>5s</span><span>15s</span></div>
           </div>
           <div class="operation-foot">
             <button id="h3V2RunBtn" class="generate-btn" type="button"><span id="h3V2RunLabel">开始生成</span><b>↗</b></button>
@@ -1642,7 +1646,7 @@
 
 <div id="toast" class="toast"></div>
 <script src="./minimax-h3-v2-config.js?v=20261029-2"></script>
-<script src="./minimax-h3-v2-runtime.js?v=20261029-2"></script>
+<script src="./minimax-h3-v2-runtime.js?v=20261029-slider-1"></script>
 <script src="./minimax-h3-long.js?v=20261015-1"></script>
 <script src="./app.js?v=20261029-h3-v2"></script>
 
