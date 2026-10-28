@@ -12,13 +12,7 @@ const H3V2_ASPECTS=[
   '4:3 (Standard)','9:16 (Portrait Widescreen)','16:9 (Widescreen)','21:9 (Ultrawide)'
 ];
 const H3V2_DEFAULTS=Object.freeze({
-  prompt:'',duration:'15',aspect:'9:16 (Portrait Widescreen)',quality:'720P',customMegapixels:'1',
-  instance:'plus',
-  lora1Name:'MysticXXX_MMH3-V5.1.safetensors',lora1Strength:'0.4',
-  lora2Name:'Minimax-H3-Digicam-Realism Improve Lora.safetensors',lora2Strength:'0.5',
-  lora3Name:'h3-realism-people-t2v-i2v-r2v_new.safetensors',lora3Strength:'0.5',
-  lora4Name:'H3电影感V2.safetensors',lora4Strength:'0.5',
-  trigger:'dynv2,r34l1sm',versionSwitch:'true',outputFormat:'video'
+  prompt:'',duration:'15',aspect:'9:16 (Portrait Widescreen)',quality:'720P'
 });
 // Snapshot of reference/node_map.json: preserve the entire app-specific node list.
 const H3V2_NODE_MAP=Object.freeze([
@@ -46,12 +40,8 @@ function h3V2BuildNodes(images,audios,values={}){
   if(!H3V2_ASPECTS.includes(cfg.aspect))throw new Error('画面比例不在当前工作流支持范围内');
   const seconds=Number(cfg.duration);
   if(!/^\d+$/.test(String(cfg.duration))||seconds<5||seconds>15)throw new Error('视频时长为 5–15 秒');
-  const mp=cfg.quality==='custom'?Number(cfg.customMegapixels):Number(H3V2_QUALITIES[cfg.quality]);
-  if(!Number.isFinite(mp)||mp<0.1||mp>16)throw new Error('目标百万像素须在 0.1–16 MP 之间');
-  if(!['default','plus','ultra'].includes(cfg.instance))throw new Error('实例类型无效');
-  if(mp>=2&&cfg.instance!=='ultra')throw new Error('2 MP 及以上必须手动选择 Ultra (84G)');
-  if(!['true','false'].includes(cfg.versionSwitch))throw new Error('节点 881 的值必须为 true 或 false');
-  if(!['video','zip'].includes(cfg.outputFormat))throw new Error('输出格式配置无效');
+  const mp=H3V2_QUALITIES[cfg.quality];
+  if(!mp)throw new Error('分辨率仅支持 480P、720P、1080P');
   const nodes=H3V2_NODE_MAP.map(([nodeId,fieldName,fieldValue])=>({
     nodeId,fieldName,fieldValue,description:null
   }));
@@ -66,20 +56,15 @@ function h3V2BuildNodes(images,audios,values={}){
   set('456','text',String(cfg.prompt).trim());
   set('804','value',seconds);
   set('462','aspect_ratio',cfg.aspect);
-  set('462','megapixels',cfg.quality==='custom'?String(mp):H3V2_QUALITIES[cfg.quality]);
-  set('881','value',cfg.versionSwitch);
-  set('824','value',String(cfg.outputFormat==='zip'));
-  [['813',1],['817',2],['815',3],['888',4]].forEach(([id,index])=>{
-    const name=String(cfg['lora'+index+'Name']||'').trim();
-    const weightText=String(cfg['lora'+index+'Strength']);
-    const weight=Number(weightText);
-    if(!name)throw new Error('LoRA '+index+' 模型名不能为空');
-    if(!weightText.trim()||!Number.isFinite(weight)||weight<-100||weight>100){
-      throw new Error('LoRA '+index+' 强度必须为 -100–100 的有限数值');
-    }
-    set(id,'lora_name',name);
-    set(id,'strength_model',weightText);
-  });
-  set('816','text',cfg.trigger);
+  set('462','megapixels',mp);
   return nodes;
+}
+// Use RH Studio's global instance setting; the workflow never selects it itself.
+function h3V2ValidateGlobalInstance(quality,instanceType){
+  if(!['default','plus','ultra'].includes(instanceType)){
+    throw new Error('全局运行实例无效，请在设置中重新选择');
+  }
+  if(quality==='1080P'&&instanceType!=='ultra'){
+    throw new Error('1080P 需要 Ultra（84G），请在全局设置中选择');
+  }
 }

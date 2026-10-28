@@ -14,13 +14,6 @@ function h3V2ReadConfig(){
 function h3V2UpdateUI(){
   const prompt=$('#h3V2PromptInput'),count=$('#h3V2PromptCount');
   if(prompt&&count)count.textContent=String(prompt.value.length);
-  const quality=$('#h3V2Quality');
-  const custom=$('#h3V2CustomMPField');
-  if(quality&&custom)custom.classList.toggle('hidden',quality.value!=='custom');
-  const note=$('#h3V2QualityNote');
-  if(note&&quality)note.textContent=quality.value==='custom'
-    ?'自定义目标 MP；实际输出尺寸以文件为准'
-    :'目标 '+(H3V2_QUALITIES[quality.value]||'?')+' MP · 不是固定输出宽高';
 }
 function h3V2LoadConfig(){
   let saved={};
@@ -119,10 +112,12 @@ async function runH3V2Task(){
   if(h3V2State.running||h3V2State.poll)return;
   if(!apiKey()){toast('请先在设置中保存 RunningHub API Key','bad');openSettings();return;}
   const config=h3V2ReadConfig();
+  const instanceType=$('#instanceType').value||'default';
   const selectedImages=Object.keys(H3V2_MEDIA).filter(slot=>H3V2_MEDIA[slot].kind==='image'&&state.files[slot]);
   const selectedAudios=Object.keys(H3V2_MEDIA).filter(slot=>H3V2_MEDIA[slot].kind==='audio'&&state.files[slot]);
   try{
     h3V2BuildNodes(selectedImages.map(x=>'pending:'+x),selectedAudios.map(x=>'pending:'+x),config);
+    h3V2ValidateGlobalInstance(config.quality,instanceType);
   }catch(error){toast(error.message,'bad');return;}
   h3V2State.running=true;$('#h3V2RunBtn').disabled=true;
   clearRuntimeTask(APP_KEYS.h3BeginnerV2);h3V2State.task=null;h3V2Download();
@@ -148,14 +143,14 @@ async function runH3V2Task(){
     const nodeInfoList=h3V2BuildNodes(images,audios,config);
     renderH3V2Loading('SUBMITTING');h3V2Status('SUBMITTING','RUNNINGHUB');
     startedSubmission=true;
-    const result=await runRHApp(APPS[APP_KEYS.h3BeginnerV2].appId,nodeInfoList,{instanceType:config.instance});
+    const result=await runRHApp(APPS[APP_KEYS.h3BeginnerV2].appId,nodeInfoList,{instanceType});
     startedSubmission=false;
     h3V2State.task=result;
     upsertHistory(APP_KEYS.h3BeginnerV2,result,{
       createdAt:Date.now(),prompt:String(config.prompt).slice(0,120),
       aspect:config.aspect.split(' ')[0],duration:config.duration+'s',
-      quality:config.quality==='custom'?config.customMegapixels+' MP':config.quality,
-      instance:instanceLabel(config.instance)
+      quality:config.quality,
+      instance:instanceLabel(instanceType)
     });
     toast('视频生成任务已提交','good');
     if(result.status==='SUCCESS')renderH3V2Success(result);
