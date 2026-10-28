@@ -255,7 +255,7 @@ document.querySelectorAll('#workspaceH3V2 .upload-slot[data-slot]').forEach(el=>
     setFile(el.dataset.slot,file);
   });
 });
-$('#h3V2RunBtn')?.addEventListener('click',runH3V2Task);
-$('#h3V2DownloadBtn')?.addEventListener('click',()=>triggerDownload(
+document.getElementById('h3V2RunBtn')?.addEventListener('click',runH3V2Task);
+document.getElementById('h3V2DownloadBtn')?.addEventListener('click',()=>triggerDownload(
   h3V2State,$('#h3V2DownloadBtn'),'rh-studio-minimax-h3-v2'
 ));

@@ -53,6 +53,14 @@ const APPS = {
     title: 'Qwen Image 2.1 多图编辑',
     type: 'image'
   },
+  'minimax-h3-beginner-v2': {
+    key:'minimax-h3-beginner-v2',
+    appId:'2101232638873858050',
+    name:'MiniMax-H3 多图生视频自动提示词 V2－小白全能版',
+    subtitle:'Skill v4 · 多图双音频',
+    title:'MiniMax-H3 多图生视频自动提示词 V2－小白全能版',
+    type:'video'
+  },
   'minimax-h3-long': {
     key:'minimax-h3-long',
     appId:'2103012816681041921',
@@ -79,7 +87,8 @@ const APP_KEYS = {
   skinUpscale: 'skin-upscale',
   qwenMultiEdit: 'qwen-image-2-1-multi-edit',
   multiFast: 'minimax-h3-multi-fast',
-  longH3: 'minimax-h3-long'
+  longH3: 'minimax-h3-long',
+  h3BeginnerV2: 'minimax-h3-beginner-v2'
 };
 
 const RH_UPLOAD_DIRECT = 'https://www.runninghub.ai/openapi/v2/media/upload/binary';
@@ -102,6 +111,7 @@ const LS = {
   multiFastPrompt: 'rhstudio.multiFast.prompt',
   multiFastAspect: 'rhstudio.multiFast.aspect',
   longH3Config: 'rhstudio.minimaxH3Long.config',
+  h3V2Config: 'rhstudio.minimaxH3BeginnerV2.config',
   qwenMultiEditPrompt: 'rhstudio.qwenImage21MultiEdit.prompt',
   qwenMultiEditAspect: 'rhstudio.qwenImage21MultiEdit.aspect',
   qwenMultiEditQuality: 'rhstudio.qwenImage21MultiEdit.quality',
@@ -321,6 +331,7 @@ function setActiveApp(key, persist=true) {
   $('#workspaceQwenMultiEdit').classList.toggle('hidden', key !== APP_KEYS.qwenMultiEdit);
   $('#workspaceMultiFast').classList.toggle('hidden', key !== APP_KEYS.multiFast);
   $('#workspaceLongH3').classList.toggle('hidden', key !== APP_KEYS.longH3);
+  $('#workspaceH3V2').classList.toggle('hidden', key !== APP_KEYS.h3BeginnerV2);
 
   const app = APPS[key];
   $('#currentAppTitle').textContent = app.title;
@@ -457,6 +468,7 @@ function loadConfig() {
   $('#multiFastPromptInput').value = localStorage.getItem(LS.multiFastPrompt) || '';
   $('#multiFastAspectRatio').value = localStorage.getItem(LS.multiFastAspect) || '9:16 (Portrait Widescreen)';
   longH3LoadConfig();
+  h3V2LoadConfig();
   state.appFilter = localStorage.getItem(LS.appFilter) || 'all';
   $('#instanceType').value = localStorage.getItem(LS.inst) || 'default';
 
@@ -739,6 +751,13 @@ function runtimeViews() {
       renderSuccess:renderLongH3Success,
       renderFailed:renderLongH3Failed,
       query:queryLongH3Task
+    },
+    [APP_KEYS.h3BeginnerV2]: {
+      state:h3V2State,
+      renderLoading:renderH3V2Loading,
+      renderSuccess:renderH3V2Success,
+      renderFailed:renderH3V2Failed,
+      query:queryH3V2Task
     }
   };
 }
@@ -1209,6 +1228,7 @@ async function fillSavedMaterials() {
 }
 
 function clearFile(slot, rerender=true) {
+  if (rerender && H3V2_MEDIA[slot]) h3V2RemoveMedia(slot).catch(()=>{});
   if (rerender && LONG_H3_MEDIA[slot]) longH3RemoveImage(slot).catch(()=>{});
   if (state.objectUrls[slot]) {
     URL.revokeObjectURL(state.objectUrls[slot]);
@@ -1229,6 +1249,7 @@ function setFile(slot, file) {
 
   state.files[slot] = file;
   if (LONG_H3_MEDIA[slot]) longH3SaveImage(slot, file).catch(()=>toast('图片本地保存失败','bad'));
+  if (H3V2_MEDIA[slot]) h3V2SaveMedia(slot, file).catch(()=>toast('参考素材本地保存失败','bad'));
   if (file.type.startsWith('image/') || file.type.startsWith('video/')) {
     state.objectUrls[slot] = URL.createObjectURL(file);
   }
@@ -1236,7 +1257,7 @@ function setFile(slot, file) {
 }
 
 function renderFileSlot(slot) {
-  const config = MEDIA[slot] || MULTI_FAST_MEDIA[slot] || QWEN_MULTI_EDIT_MEDIA[slot] || LONG_H3_MEDIA[slot];
+  const config = MEDIA[slot] || MULTI_FAST_MEDIA[slot] || QWEN_MULTI_EDIT_MEDIA[slot] || LONG_H3_MEDIA[slot] || H3V2_MEDIA[slot];
   if (!config) return;
   const file = state.files[slot];
   const el = $('.upload-slot[data-slot="' + slot + '"]');
@@ -1342,7 +1363,7 @@ function activeWorkspaceUploadSlots() {
   return [...workspace.querySelectorAll('.upload-slot[data-slot]')]
     .map(el => {
       const slot = el.dataset.slot;
-      const config = MEDIA[slot] || MULTI_FAST_MEDIA[slot] || QWEN_MULTI_EDIT_MEDIA[slot] || LONG_H3_MEDIA[slot];
+      const config = MEDIA[slot] || MULTI_FAST_MEDIA[slot] || QWEN_MULTI_EDIT_MEDIA[slot] || LONG_H3_MEDIA[slot] || H3V2_MEDIA[slot];
       return config ? {el, slot, config} : null;
     })
     .filter(Boolean);
@@ -3776,6 +3797,7 @@ $('#clearLocal').onclick = () => {
     LS.multiFastPrompt,
     LS.multiFastAspect,
     LS.longH3Config,
+    LS.h3V2Config,
     LS.qwenMultiEditPrompt,
     LS.qwenMultiEditAspect,
     LS.qwenMultiEditQuality,
@@ -3796,7 +3818,9 @@ $('#clearLocal').onclick = () => {
   renderQwenMultiEditIdle();
   renderMultiFastIdle();
   renderLongH3Idle();
+  renderH3V2Idle();
   clearAllLongH3Images().catch(()=>{});
+  h3V2ClearAllMedia().catch(()=>{});
   renderAppFilter('all', false, false);
   setActiveApp(APP_KEYS.video);
   toast('本地应用配置已重置');
@@ -3808,7 +3832,9 @@ Object.keys(MEDIA).forEach(renderFileSlot);
 Object.keys(MULTI_FAST_MEDIA).forEach(renderFileSlot);
 Object.keys(QWEN_MULTI_EDIT_MEDIA).forEach(renderFileSlot);
 Object.keys(LONG_H3_MEDIA).forEach(renderFileSlot);
+Object.keys(H3V2_MEDIA).forEach(renderFileSlot);
 restoreLongH3Images().catch(()=>{});
+h3V2RestoreMedia().catch(()=>{});
 ensureMaterialLibrary().catch(() => updateMaterialLibraryBadges());
 renderVideoIdle();
 renderImageIdle();
@@ -3819,6 +3845,7 @@ renderSkinUpscaleInput();
 renderQwenMultiEditIdle();
 renderMultiFastIdle();
 renderLongH3Idle();
+renderH3V2Idle();
 syncAutoGenerateAvailability();
 updateAutoBatchProgress();
 
