@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>RH Studio</title>
 <meta name="description" content="RunningHub multi-app AI workspace" />
-<link rel="stylesheet" href="./style.css?v=20261029-h3-v2-slider-1">
+<link rel="stylesheet" href="./style.css?v=20261031-lora-strength">
 
 <style id="prompt-settings-feature-styles">
 .prompt-head-actions{align-self:center;display:flex;align-items:center;gap:8px}
@@ -1175,6 +1175,27 @@
             <input id="h3V2DurationRange" data-h3-v2-field="duration" type="range" min="5" max="15" step="1" value="15">
             <div class="duration-scale"><span>5s</span><span>15s</span></div>
           </div>
+          <details class="h3-v2-lora-settings">
+            <summary>LoRA 强度 <span>4 项可调</span></summary>
+            <div class="h3-v2-strength-grid">
+              <label title="MysticXXX_MMH3-V5.1.safetensors">
+                <span>LoRA 1 · MysticXXX V5.1</span>
+                <input type="number" data-h3-v2-field="lora1Strength" aria-label="LoRA 1 强度" min="-100" max="100" step="0.05" value="0.4">
+              </label>
+              <label title="Minimax-H3-Digicam-Realism Improve Lora.safetensors">
+                <span>LoRA 2 · Digicam Realism</span>
+                <input type="number" data-h3-v2-field="lora2Strength" aria-label="LoRA 2 强度" min="-100" max="100" step="0.05" value="0.5">
+              </label>
+              <label title="h3-realism-people-t2v-i2v-r2v_new.safetensors">
+                <span>LoRA 3 · Realism People</span>
+                <input type="number" data-h3-v2-field="lora3Strength" aria-label="LoRA 3 强度" min="-100" max="100" step="0.05" value="0.6">
+              </label>
+              <label title="H3电影感V2.safetensors">
+                <span>LoRA 4 · 电影感 V2</span>
+                <input type="number" data-h3-v2-field="lora4Strength" aria-label="LoRA 4 强度" min="-100" max="100" step="0.05" value="0.2">
+              </label>
+            </div>
+          </details>
           <div class="operation-foot">
             <button id="h3V2RunBtn" class="generate-btn" type="button"><span id="h3V2RunLabel">开始生成</span><b>↗</b></button>
           </div>
@@ -1645,7 +1666,7 @@
 </div>
 
 <div id="toast" class="toast"></div>
-<script src="./minimax-h3-v2-config.js?v=20261029-2"></script>
+<script src="./minimax-h3-v2-config.js?v=20261031-lora-strength-v401"></script>
 <script src="./minimax-h3-v2-runtime.js?v=20261029-slider-1"></script>
 <script src="./minimax-h3-long.js?v=20261015-1"></script>
 <script src="./app.js?v=20261029-h3-v2"></script>

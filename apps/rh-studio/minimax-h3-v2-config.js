@@ -1,4 +1,4 @@
-// Source: oTATo-Boss/my-skills/skills/video/ai/rh-minimax-h3 v4.0.0 (2026-10-28).
+// Source: oTATo-Boss/my-skills/skills/video/ai/rh-minimax-h3 v4.0.1 (2026-10-31).
 // RunningHub MiniMax-H3 多图生视频自动提示词 V2－小白全能版 / AI App 2101232638873858050.
 const H3V2_IMAGE_IDS=['438','435','437','439','431','429'];
 const H3V2_AUDIO_IDS=['841','842'];
@@ -12,7 +12,8 @@ const H3V2_ASPECTS=[
   '4:3 (Standard)','9:16 (Portrait Widescreen)','16:9 (Widescreen)','21:9 (Ultrawide)'
 ];
 const H3V2_DEFAULTS=Object.freeze({
-  prompt:'',duration:'15',aspect:'9:16 (Portrait Widescreen)',quality:'720P'
+  prompt:'',duration:'15',aspect:'9:16 (Portrait Widescreen)',quality:'720P',
+  lora1Strength:'0.4',lora2Strength:'0.5',lora3Strength:'0.6',lora4Strength:'0.2'
 });
 // Snapshot of reference/node_map.json: preserve the entire app-specific node list.
 const H3V2_NODE_MAP=Object.freeze([
@@ -24,8 +25,8 @@ const H3V2_NODE_MAP=Object.freeze([
   ['774','unet_name','minimax_h3_hybrid_fl2va_ref2va_b25-49-int8_r.safetensors'],
   ['813','lora_name','MysticXXX_MMH3-V5.1.safetensors'],['813','strength_model','0.4'],
   ['817','lora_name','Minimax-H3-Digicam-Realism Improve Lora.safetensors'],['817','strength_model','0.5'],
-  ['815','lora_name','h3-realism-people-t2v-i2v-r2v_new.safetensors'],['815','strength_model','0.5'],
-  ['888','lora_name','H3电影感V2.safetensors'],['888','strength_model','0.5'],
+  ['815','lora_name','h3-realism-people-t2v-i2v-r2v_new.safetensors'],['815','strength_model','0.6'],
+  ['888','lora_name','H3电影感V2.safetensors'],['888','strength_model','0.2'],
   ['816','text','dynv2,r34l1sm'],['824','value','false']
 ]);
 function h3V2BuildNodes(images,audios,values={}){
@@ -57,6 +58,16 @@ function h3V2BuildNodes(images,audios,values={}){
   set('804','value',seconds);
   set('462','aspect_ratio',cfg.aspect);
   set('462','megapixels',mp);
+  // LoRA files and trigger remain locked to the Skill snapshot; strengths are user-adjustable.
+  [['813','lora1Strength'],['817','lora2Strength'],['815','lora3Strength'],['888','lora4Strength']]
+    .forEach(([id,key],index)=>{
+      const raw=String(cfg[key]??'').trim();
+      const strength=Number(raw);
+      if(!raw||!Number.isFinite(strength)||strength<-100||strength>100){
+        throw new Error('LoRA '+(index+1)+' 强度须为 -100 到 100 之间的有效数字');
+      }
+      set(id,'strength_model',raw);
+    });
   return nodes;
 }
 // Use RH Studio's global instance setting; the workflow never selects it itself.

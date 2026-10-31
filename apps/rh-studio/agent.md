@@ -629,16 +629,16 @@ Cloudflare Pages 静态资源与 Pages Functions 必须同时承载：
 - 结果文件 URL 约 24 小时过期，浏览器任务记录不是媒体文件云存储。
 
 
-### 14.11 MiniMax-H3 多图生视频自动提示词 V2－小白全能版（Skill 4.0.0）
+### 14.11 MiniMax-H3 多图生视频自动提示词 V2－小白全能版（Skill 4.0.1）
 
 - `appKey`：`minimax-h3-beginner-v2`，`type: video`，RunningHub AI App ID：`2101232638873858050`。
-- 唯一权威来源为 `oTATo-Boss/my-skills/skills/video/ai/rh-minimax-h3` 的 v4.0.0（2026-10-28）`SKILL.md` 和 `references/node_map.json`；保存本次 25 项参数快照在 `minimax-h3-v2-config.js`，运行逻辑在 `minimax-h3-v2-runtime.js`。
+- 唯一权威来源为 `oTATo-Boss/my-skills/skills/video/ai/rh-minimax-h3` 的 v4.0.1（2026-10-31）`SKILL.md` 和 `references/node_map.json`；保存本次 25 项参数快照在 `minimax-h3-v2-config.js`，运行逻辑在 `minimax-h3-v2-runtime.js`。
 - 六图 Node 438、435、437、439、431、429；按实际输入顺序压缩到前几个槽，空图片槽复用最后一张真实图片，Node 827 / value = 真实图片数量。至少 1 张图片，纯文生未验证。
 - 可选双音频 Node 841、842；空音频字段传 `None`。
 - Prompt Node 456 / text；时长 Node 804 / value = 5–15 秒，默认 15；画幅 Node 462 / aspect_ratio 支持八种真实枚举，默认 9:16。时长统一使用现有视频应用的 `.duration-control` 滑条样式，步长 1 秒，拖动实时显示数值并保存设置。
 - Node 462 / megapixels：分辨率下拉仅有 480P = 0.5 MP、720P = 1 MP、1080P = 2 MP（默认 720P），实际像素由生成结果决定。
 - Node 881 / value = true（默认工作流标志、具体版本含义未证实）；Node 774 / unet_name = `minimax_h3_hybrid_fl2va_ref2va_b25-49-int8_r.safetensors`；Node 824 / value = false 为视频输出，ZIP 为实验选项。
-- 四组 LoRA：Node 813 / 817 / 815 / 888；默认分别为 `MysticXXX_MMH3-V5.1.safetensors`(0.4)、`Minimax-H3-Digicam-Realism Improve Lora.safetensors`(0.5)、`h3-realism-people-t2v-i2v-r2v_new.safetensors`(0.5)、`H3电影感V2.safetensors`(0.5)；Node 816 / text 默认 `dynv2,r34l1sm`。
-- 本应用使用顶部**全局设置**中的实例，与 §5.2 保持一致。生成工作区仅展示**比例、分辨率、时长**，默认 720P；720P 推荐全局 Plus，1080P 提交前校验全局实例为 Ultra。实例始终由用户在全局设置中手动选择，网站不自动切换。
+- 四组 LoRA：Node 813 / 817 / 815 / 888；默认分别为 `MysticXXX_MMH3-V5.1.safetensors`(0.4)、`Minimax-H3-Digicam-Realism Improve Lora.safetensors`(0.5)、`h3-realism-people-t2v-i2v-r2v_new.safetensors`(0.6)、`H3电影感V2.safetensors`(0.2)；Node 816 / text 默认 `dynv2,r34l1sm`。
+- 本应用使用顶部**全局设置**中的实例，与 §5.2 保持一致。主操作区展示比例、分辨率、时长，以及默认折叠的四组 LoRA 强度输入，默认 720P；720P 推荐全局 Plus，1080P 提交前校验全局实例为 Ultra。实例始终由用户在全局设置中手动选择，网站不自动切换。
 - 输入文件及参数分别保存在独立 IndexedDB `rhstudio-minimax-h3-v2-materials`、LocalStorage `rhstudio.minimaxH3BeginnerV2.config`；共用 RH Studio 全局 API Key、Cloudflare 上传/查询代理、历史、故障诊断与任务恢复。
-- 四组 LoRA 的模型名称及强度、触发词 `dynv2,r34l1sm`、Node 881 = `true`、Node 824 = `false`（视频输出）、Node 774 的模型文件全部固定为 Skill v4 节点快照值；界面不展示或修改，生成请求不接受它们的覆盖。此工作流无可确认的独立优化开关、采样步数、种子及视频参考节点，LoRA 实际加载和画质仍需真实生成验证。
+- 四组 LoRA 的**模型名称固定**为 Skill v4 节点快照，Node 813 / 817 / 815 / 888 的 `strength_model` 在前端可分别调节并保存在 `rhstudio.minimaxH3BeginnerV2.config`；默认强度依次为 `0.4 / 0.5 / 0.6 / 0.2`，按 Skill 构造器校验有限数字范围 -100～100。触发词 `dynv2,r34l1sm`、Node 881 = `true`、Node 824 = `false`（视频输出）、Node 774 模型文件名仍固定。其他参数保持原样；LoRA 实际加载和画质仍需真实生成验证。

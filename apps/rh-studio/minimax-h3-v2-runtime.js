@@ -1,4 +1,4 @@
-// RH Studio runtime for rh-minimax-h3 v4.0.0 / MiniMax H3 V2 beginner.
+// RH Studio runtime for rh-minimax-h3 v4.0.1 / MiniMax H3 V2 beginner.
 const h3V2State={
   task:null,poll:null,running:false,queryPending:false,
   outputUrl:'',outputSourceUrl:'',outputType:''
