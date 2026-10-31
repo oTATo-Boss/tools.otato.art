@@ -46,7 +46,7 @@ test('multiple images are compressed; audio is optional',()=>{
 
 test('LoRA model names and trigger stay fixed while four strengths are independently adjustable',()=>{
   const defaults=build(['a.png'],[],prompt);
-  for(const [id,weight] of [['813','0.4'],['817','0.5'],['815','0.5'],['888','0.5']]){
+  for(const [id,weight] of [['813','0.4'],['817','0.5'],['815','0.6'],['888','0.2']]){
     assert.equal(node(defaults,id,'strength_model'),weight);
   }
   const changed=build(['a.png'],[],{...prompt,lora1Name:'overridden.safetensors',
@@ -117,7 +117,7 @@ test('UI exposes exactly aspect, resolution, duration; global settings controls 
   assert.deepEqual([...workspace.matchAll(/data-h3-v2-field="([^"]+)"/g)].map(x=>x[1]),
     ['prompt','aspect','quality','duration','lora1Strength','lora2Strength','lora3Strength','lora4Strength']);
   assert.match(workspace,/<details class="h3-v2-lora-settings">/);
-  for(const [index,value] of [[1,'0.4'],[2,'0.5'],[3,'0.5'],[4,'0.5']]){
+  for(const [index,value] of [[1,'0.4'],[2,'0.5'],[3,'0.6'],[4,'0.2']]){
     assert.match(workspace,new RegExp('data-h3-v2-field="lora'+index+'Strength"[^>]+value="'+value+'"'));
   }
   assert.doesNotMatch(workspace,/data-h3-v2-field="(?:lora[1-4]Name|trigger|versionSwitch|instance|outputFormat)"/);
