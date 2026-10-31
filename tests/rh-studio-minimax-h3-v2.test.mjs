@@ -44,26 +44,35 @@ test('multiple images are compressed; audio is optional',()=>{
   assert.equal(node(six,'842','audio'),'b');
 });
 
-test('Skill v4 LoRAs, trigger and workflow flags remain fixed even with legacy saved values',()=>{
-  const nodes=build(['a.png'],[],{...prompt,lora1Name:'changed.safetensors',
-    lora1Strength:'97',lora2Name:'changed.safetensors',lora2Strength:'-3',
-    lora3Name:'changed.safetensors',lora3Strength:'-4',
-    lora4Name:'changed.safetensors',lora4Strength:'99',
-    trigger:'different',versionSwitch:'false',outputFormat:'zip'});
-  const fixed=[
-    ['813','MysticXXX_MMH3-V5.1.safetensors','0.4'],
-    ['817','Minimax-H3-Digicam-Realism Improve Lora.safetensors','0.5'],
-    ['815','h3-realism-people-t2v-i2v-r2v_new.safetensors','0.5'],
-    ['888','H3电影感V2.safetensors','0.5']
-  ];
-  for(const [id,name,weight] of fixed){
-    assert.equal(node(nodes,id,'lora_name'),name);
-    assert.equal(node(nodes,id,'strength_model'),weight);
+test('LoRA model names and trigger stay fixed while four strengths are independently adjustable',()=>{
+  const defaults=build(['a.png'],[],prompt);
+  for(const [id,weight] of [['813','0.4'],['817','0.5'],['815','0.5'],['888','0.5']]){
+    assert.equal(node(defaults,id,'strength_model'),weight);
   }
-  assert.equal(node(nodes,'816','text'),'dynv2,r34l1sm');
-  assert.equal(node(nodes,'881','value'),'true');
-  assert.equal(node(nodes,'824','value'),'false');
-  assert.equal(node(nodes,'774','unet_name'),'minimax_h3_hybrid_fl2va_ref2va_b25-49-int8_r.safetensors');
+  const changed=build(['a.png'],[],{...prompt,lora1Name:'overridden.safetensors',
+    lora1Strength:'0.15',lora2Name:'wrong',lora2Strength:'0.65',
+    lora3Name:'wrong',lora3Strength:'1.25',lora4Name:'wrong',lora4Strength:'-0.2',
+    trigger:'different',versionSwitch:'false',outputFormat:'zip'});
+  for(const [id,name,weight] of [
+    ['813','MysticXXX_MMH3-V5.1.safetensors','0.15'],
+    ['817','Minimax-H3-Digicam-Realism Improve Lora.safetensors','0.65'],
+    ['815','h3-realism-people-t2v-i2v-r2v_new.safetensors','1.25'],
+    ['888','H3电影感V2.safetensors','-0.2']
+  ]){
+    assert.equal(node(changed,id,'lora_name'),name);
+    assert.equal(node(changed,id,'strength_model'),weight);
+  }
+  assert.equal(node(changed,'816','text'),'dynv2,r34l1sm');
+  assert.equal(node(changed,'881','value'),'true');
+  assert.equal(node(changed,'824','value'),'false');
+  assert.equal(node(changed,'774','unet_name'),'minimax_h3_hybrid_fl2va_ref2va_b25-49-int8_r.safetensors');
+});
+
+test('LoRA strengths validate numbers without uploading any media',()=>{
+  for(const input of ['', 'NaN', 'Infinity', '101', '-101']){
+    assert.throws(()=>build(['a.png'],[],{...prompt,lora3Strength:input}),/LoRA 3/);
+  }
+  assert.equal(node(build(['a.png'],[],{...prompt,lora1Strength:'0'}),'813','strength_model'),'0');
 });
 
 test('resolution has exactly three quality presets and global instance safety',()=>{
@@ -106,11 +115,18 @@ test('UI exposes exactly aspect, resolution, duration; global settings controls 
   assert.ok(start>0&&end>start);
   const workspace=html.slice(start,end);
   assert.deepEqual([...workspace.matchAll(/data-h3-v2-field="([^"]+)"/g)].map(x=>x[1]),
-    ['prompt','aspect','quality','duration']);
+    ['prompt','aspect','quality','duration','lora1Strength','lora2Strength','lora3Strength','lora4Strength']);
+  assert.match(workspace,/<details class="h3-v2-lora-settings">/);
+  for(const [index,value] of [[1,'0.4'],[2,'0.5'],[3,'0.5'],[4,'0.5']]){
+    assert.match(workspace,new RegExp('data-h3-v2-field="lora'+index+'Strength"[^>]+value="'+value+'"'));
+  }
+  assert.doesNotMatch(workspace,/data-h3-v2-field="(?:lora[1-4]Name|trigger|versionSwitch|instance|outputFormat)"/);
   assert.deepEqual([...workspace.matchAll(/<option value="(480P|720P|1080P)"/g)].map(x=>x[1]),
     ['480P','720P','1080P']);
   assert.doesNotMatch(workspace,/h3V2Instance|h3-v2-advanced|h3V2CustomMPField|h3V2QualityNote|运行实例/);
   assert.match(runtime,/const instanceType=\$\('#instanceType'\)\.value/);
+  assert.match(runtime,/el.addEventListener\('input',h3V2SaveConfig\)/);
+  assert.match(runtime,/localStorage.setItem\(LS.h3V2Config,JSON.stringify\(h3V2ReadConfig\(\)\)\)/);
   assert.match(runtime,/runRHApp\(APPS\[APP_KEYS\.h3BeginnerV2\]\.appId,nodeInfoList,\{instanceType\}\)/);
   assert.match(app,/appId:'2101232638873858050'/);
   assert.match(app,/\[APP_KEYS\.h3BeginnerV2\]:/);

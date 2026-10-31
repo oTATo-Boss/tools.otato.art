@@ -62,6 +62,6 @@ Task ID import to recover existing tasks as needed.
 - AI App ID: `2101232638873858050`; RH Studio app key: `minimax-h3-beginner-v2`.
 - Uses `minimax-h3-v2-config.js` (25 nodes) and `minimax-h3-v2-runtime.js` (uploads, polling, results, browser persistence). Unlike the long-video app, this workflow generates 5–15-second clips.
 - Inputs: 1–6 images, up to 2 audio files. Empty image nodes repeat the last supplied image; Node 827 records the true image count.
-- Visible generation controls: **aspect ratio, resolution (480P/720P/1080P), duration (5–15s)** only. Running instance comes from global RH Studio Settings (1080P requires Ultra). Four LoRA names and weights, trigger, model and workflow flags are fixed to Skill v4 node snapshot.
+- Main generation controls: aspect ratio, resolution (480P/720P/1080P), duration (5–15s). A collapsible panel exposes **four independent LoRA strengths** (defaults 0.4 / 0.5 / 0.5 / 0.5, persisted locally); LoRA filenames, trigger, base model and workflow flags remain fixed to the Skill v4 snapshot. Running instance comes from global RH Studio Settings (1080P requires Ultra).
 - Output URLs normally expire after 24 hours. Video generation and the new LoRA combination have not been live-verified.
 - Tests: `tests/rh-studio-minimax-h3-v2.test.mjs`.

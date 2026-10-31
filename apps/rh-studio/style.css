@@ -897,3 +897,30 @@ select,.input{width:100%;height:38px;border:1px solid var(--line);border-radius:
   #workspaceH3V2 .h3-v2-operation{overflow:visible}
   #workspaceH3V2 .h3-v2-asset-note{font-size:10px}
 }
+
+
+/* MiniMax-H3 V2: four compact user-adjustable LoRA strengths. */
+#workspaceH3V2 .h3-v2-lora-settings{
+  flex:0 0 auto;min-width:0;margin-top:8px;
+  border:1px solid var(--line);border-radius:11px;background:rgba(255,255,255,.018)
+}
+#workspaceH3V2 .h3-v2-lora-settings summary{
+  display:flex;align-items:center;justify-content:space-between;gap:10px;
+  padding:9px 10px;cursor:pointer;color:#cbb7a0;font-size:9px;font-weight:650;
+  list-style:none
+}
+#workspaceH3V2 .h3-v2-lora-settings summary::-webkit-details-marker{display:none}
+#workspaceH3V2 .h3-v2-lora-settings summary span{color:#86796d;font-size:8px;font-weight:500}
+#workspaceH3V2 .h3-v2-strength-grid{
+  display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px;padding:0 10px 10px
+}
+#workspaceH3V2 .h3-v2-strength-grid label{display:flex;flex-direction:column;gap:5px;min-width:0}
+#workspaceH3V2 .h3-v2-strength-grid label span{
+  display:block;color:#978a7d;font-size:8px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis
+}
+#workspaceH3V2 .h3-v2-strength-grid input{
+  box-sizing:border-box;width:100%;height:32px;padding:0 9px;
+  border:1px solid var(--line);border-radius:10px;background:rgba(7,7,7,.4);
+  color:#e9dfd3;font-size:11px;font-variant-numeric:tabular-nums;outline:none;color-scheme:dark
+}
+#workspaceH3V2 .h3-v2-strength-grid input:focus{border-color:rgba(255,179,92,.4)}

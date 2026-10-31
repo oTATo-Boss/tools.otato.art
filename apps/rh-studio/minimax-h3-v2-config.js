@@ -12,7 +12,8 @@ const H3V2_ASPECTS=[
   '4:3 (Standard)','9:16 (Portrait Widescreen)','16:9 (Widescreen)','21:9 (Ultrawide)'
 ];
 const H3V2_DEFAULTS=Object.freeze({
-  prompt:'',duration:'15',aspect:'9:16 (Portrait Widescreen)',quality:'720P'
+  prompt:'',duration:'15',aspect:'9:16 (Portrait Widescreen)',quality:'720P',
+  lora1Strength:'0.4',lora2Strength:'0.5',lora3Strength:'0.5',lora4Strength:'0.5'
 });
 // Snapshot of reference/node_map.json: preserve the entire app-specific node list.
 const H3V2_NODE_MAP=Object.freeze([
@@ -57,6 +58,16 @@ function h3V2BuildNodes(images,audios,values={}){
   set('804','value',seconds);
   set('462','aspect_ratio',cfg.aspect);
   set('462','megapixels',mp);
+  // LoRA files and trigger remain locked to the Skill snapshot; strengths are user-adjustable.
+  [['813','lora1Strength'],['817','lora2Strength'],['815','lora3Strength'],['888','lora4Strength']]
+    .forEach(([id,key],index)=>{
+      const raw=String(cfg[key]??'').trim();
+      const strength=Number(raw);
+      if(!raw||!Number.isFinite(strength)||strength<-100||strength>100){
+        throw new Error('LoRA '+(index+1)+' 强度须为 -100 到 100 之间的有效数字');
+      }
+      set(id,'strength_model',raw);
+    });
   return nodes;
 }
 // Use RH Studio's global instance setting; the workflow never selects it itself.

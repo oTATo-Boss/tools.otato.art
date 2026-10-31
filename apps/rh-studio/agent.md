@@ -639,6 +639,6 @@ Cloudflare Pages 静态资源与 Pages Functions 必须同时承载：
 - Node 462 / megapixels：分辨率下拉仅有 480P = 0.5 MP、720P = 1 MP、1080P = 2 MP（默认 720P），实际像素由生成结果决定。
 - Node 881 / value = true（默认工作流标志、具体版本含义未证实）；Node 774 / unet_name = `minimax_h3_hybrid_fl2va_ref2va_b25-49-int8_r.safetensors`；Node 824 / value = false 为视频输出，ZIP 为实验选项。
 - 四组 LoRA：Node 813 / 817 / 815 / 888；默认分别为 `MysticXXX_MMH3-V5.1.safetensors`(0.4)、`Minimax-H3-Digicam-Realism Improve Lora.safetensors`(0.5)、`h3-realism-people-t2v-i2v-r2v_new.safetensors`(0.5)、`H3电影感V2.safetensors`(0.5)；Node 816 / text 默认 `dynv2,r34l1sm`。
-- 本应用使用顶部**全局设置**中的实例，与 §5.2 保持一致。生成工作区仅展示**比例、分辨率、时长**，默认 720P；720P 推荐全局 Plus，1080P 提交前校验全局实例为 Ultra。实例始终由用户在全局设置中手动选择，网站不自动切换。
+- 本应用使用顶部**全局设置**中的实例，与 §5.2 保持一致。主操作区展示比例、分辨率、时长，以及默认折叠的四组 LoRA 强度输入，默认 720P；720P 推荐全局 Plus，1080P 提交前校验全局实例为 Ultra。实例始终由用户在全局设置中手动选择，网站不自动切换。
 - 输入文件及参数分别保存在独立 IndexedDB `rhstudio-minimax-h3-v2-materials`、LocalStorage `rhstudio.minimaxH3BeginnerV2.config`；共用 RH Studio 全局 API Key、Cloudflare 上传/查询代理、历史、故障诊断与任务恢复。
-- 四组 LoRA 的模型名称及强度、触发词 `dynv2,r34l1sm`、Node 881 = `true`、Node 824 = `false`（视频输出）、Node 774 的模型文件全部固定为 Skill v4 节点快照值；界面不展示或修改，生成请求不接受它们的覆盖。此工作流无可确认的独立优化开关、采样步数、种子及视频参考节点，LoRA 实际加载和画质仍需真实生成验证。
+- 四组 LoRA 的**模型名称固定**为 Skill v4 节点快照，Node 813 / 817 / 815 / 888 的 `strength_model` 在前端可分别调节并保存在 `rhstudio.minimaxH3BeginnerV2.config`；默认强度依次为 `0.4 / 0.5 / 0.5 / 0.5`，按 Skill 构造器校验有限数字范围 -100～100。触发词 `dynv2,r34l1sm`、Node 881 = `true`、Node 824 = `false`（视频输出）、Node 774 模型文件名仍固定。其他参数保持原样；LoRA 实际加载和画质仍需真实生成验证。
