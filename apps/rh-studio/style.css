@@ -924,3 +924,54 @@ select,.input{width:100%;height:38px;border:1px solid var(--line);border-radius:
   color:#e9dfd3;font-size:11px;font-variant-numeric:tabular-nums;outline:none;color-scheme:dark
 }
 #workspaceH3V2 .h3-v2-strength-grid input:focus{border-color:rgba(255,179,92,.4)}
+
+
+/* Qwen Image 2.1 dual-LoRA editor: shared graphite four-zone layout. */
+#workspaceQwenNsfw .qwen-nsfw-assets {
+  grid-template-rows:48px minmax(0,1fr) auto;
+}
+#workspaceQwenNsfw .qwen-nsfw-asset-note {
+  margin:0 3px;
+  color:#80776e;
+  font-size:9px;
+  line-height:1.5;
+}
+#workspaceQwenNsfw .upload-slot.drag-over {
+  border-color:rgba(255,179,92,.6);
+  background:rgba(255,179,92,.08);
+}
+#workspaceQwenNsfw .qwen-nsfw-model-info>span {
+  display:block;
+  margin:0 0 5px 2px;
+  color:#746c63;
+  font-size:8px;
+}
+#workspaceQwenNsfw .qwen-nsfw-model-info>strong {
+  display:flex;
+  align-items:center;
+  height:38px;
+  border:1px solid var(--line);
+  border-radius:12px;
+  padding:0 10px;
+  color:#cdb28f;
+  font-size:10px;
+  background:rgba(255,255,255,.022);
+}
+#workspaceQwenNsfw .qwen-nsfw-lock-note {
+  margin:13px 2px 12px;
+  display:flex;
+  flex-wrap:wrap;
+  gap:6px;
+}
+#workspaceQwenNsfw .qwen-nsfw-lock-note span {
+  border:1px solid var(--line);
+  border-radius:9px;
+  padding:8px 9px;
+  color:#aaa096;
+  background:rgba(255,255,255,.02);
+  font-size:9px;
+}
+#workspaceQwenNsfw .qwen-nsfw-lock-note b {
+  color:#d6ad7c;
+  margin-left:5px;
+}
