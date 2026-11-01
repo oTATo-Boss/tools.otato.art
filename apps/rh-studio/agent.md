@@ -642,3 +642,14 @@ Cloudflare Pages 静态资源与 Pages Functions 必须同时承载：
 - 本应用使用顶部**全局设置**中的实例，与 §5.2 保持一致。主操作区展示比例、分辨率、时长，以及默认折叠的四组 LoRA 强度输入，默认 720P；720P 推荐全局 Plus，1080P 提交前校验全局实例为 Ultra。实例始终由用户在全局设置中手动选择，网站不自动切换。
 - 输入文件及参数分别保存在独立 IndexedDB `rhstudio-minimax-h3-v2-materials`、LocalStorage `rhstudio.minimaxH3BeginnerV2.config`；共用 RH Studio 全局 API Key、Cloudflare 上传/查询代理、历史、故障诊断与任务恢复。
 - 四组 LoRA 的**模型名称固定**为 Skill v4 节点快照，Node 813 / 817 / 815 / 888 的 `strength_model` 在前端可分别调节并保存在 `rhstudio.minimaxH3BeginnerV2.config`；默认强度依次为 `0.4 / 0.5 / 0.6 / 0.2`，按 Skill 构造器校验有限数字范围 -100～100。触发词 `dynv2,r34l1sm`、Node 881 = `true`、Node 824 = `false`（视频输出）、Node 774 模型文件名仍固定。其他参数保持原样；LoRA 实际加载和画质仍需真实生成验证。
+
+
+### 14.10 Qwen Image 2.1 NSFW 多图编辑
+
+- `appKey`：`qwen-image-2-1-nsfw`；AI App ID：`2104225323949101057`，类型：多图图片编辑。
+- 图片节点（字段 image）：476、491、477、492、495、494；图 1 必填，其余可空（None）。
+- Prompt：497 / prompt；画幅：13 / aspect_ratio，八种已确认选项。
+- 固定 LoRA：534 / lora_name = NSFW Qwen by TheseAlpacas V2.safetensors，strength_model = 0.8；526 / lora_name = Pornmaster_QI2.1_Breasts_Slider_V1.safetensors，strength_model = 1。
+- API 示例固定节点：532/value=2.0000000000000004、521/value=false、527/value=1、515/value=false、525/value=false、528/value=true。
+- 未确认节点的业务意义前不添加对应 UI 控件；LoRA 名称与权重不允许修改。
+- 图片素材使用独立 IndexedDB；任务状态和历史记录复用全局机制。
