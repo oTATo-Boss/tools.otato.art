@@ -53,6 +53,14 @@ const APPS = {
     title: 'Qwen Image 2.1 多图编辑',
     type: 'image'
   },
+  'qwen-image-2-1-nsfw': {
+    key:'qwen-image-2-1-nsfw',
+    appId:'2104225323949101057',
+    name:'Qwen Image 2.1 NSFW 多图编辑',
+    subtitle:'双 LoRA · 固定权重',
+    title:'Qwen Image 2.1 NSFW 多图编辑',
+    type:'image'
+  },
   'minimax-h3-beginner-v2': {
     key:'minimax-h3-beginner-v2',
     appId:'2101232638873858050',
@@ -86,6 +94,7 @@ const APP_KEYS = {
   kq12Portrait: 'kq12-portrait',
   skinUpscale: 'skin-upscale',
   qwenMultiEdit: 'qwen-image-2-1-multi-edit',
+  qwenNsfw: 'qwen-image-2-1-nsfw',
   multiFast: 'minimax-h3-multi-fast',
   longH3: 'minimax-h3-long',
   h3BeginnerV2: 'minimax-h3-beginner-v2'
@@ -116,6 +125,8 @@ const LS = {
   qwenMultiEditAspect: 'rhstudio.qwenImage21MultiEdit.aspect',
   qwenMultiEditQuality: 'rhstudio.qwenImage21MultiEdit.quality',
   qwenMultiEditCount: 'rhstudio.qwenImage21MultiEdit.count',
+  qwenNsfwPrompt: 'rhstudio.qwenNsfw.prompt',
+  qwenNsfwAspect: 'rhstudio.qwenNsfw.aspect',
   appFilter: 'rhstudio.appFilter',
   inst: 'rhstudio.instanceType',
   history: 'rhstudio.generationHistory',
@@ -329,6 +340,7 @@ function setActiveApp(key, persist=true) {
   $('#workspaceKQ12').classList.toggle('hidden', key !== APP_KEYS.kq12Portrait);
   $('#workspaceSkinUpscale').classList.toggle('hidden', key !== APP_KEYS.skinUpscale);
   $('#workspaceQwenMultiEdit').classList.toggle('hidden', key !== APP_KEYS.qwenMultiEdit);
+  $('#workspaceQwenNsfw').classList.toggle('hidden', key !== APP_KEYS.qwenNsfw);
   $('#workspaceMultiFast').classList.toggle('hidden', key !== APP_KEYS.multiFast);
   $('#workspaceLongH3').classList.toggle('hidden', key !== APP_KEYS.longH3);
   $('#workspaceH3V2').classList.toggle('hidden', key !== APP_KEYS.h3BeginnerV2);
@@ -469,6 +481,7 @@ function loadConfig() {
   $('#multiFastAspectRatio').value = localStorage.getItem(LS.multiFastAspect) || '9:16 (Portrait Widescreen)';
   longH3LoadConfig();
   h3V2LoadConfig();
+  qwenNsfwLoadConfig();
   state.appFilter = localStorage.getItem(LS.appFilter) || 'all';
   $('#instanceType').value = localStorage.getItem(LS.inst) || 'default';
 
@@ -737,6 +750,13 @@ function runtimeViews() {
       renderSuccess:renderQwenMultiEditSuccess,
       renderFailed:renderQwenMultiEditFailed,
       query:queryQwenMultiEditTask
+    },
+    [APP_KEYS.qwenNsfw]: {
+      state:qwenNsfwState,
+      renderLoading:renderQwenNsfwLoading,
+      renderSuccess:renderQwenNsfwSuccess,
+      renderFailed:renderQwenNsfwFailed,
+      query:queryQwenNsfwTask
     },
     [APP_KEYS.multiFast]: {
       state:multiFastState,
@@ -1229,6 +1249,7 @@ async function fillSavedMaterials() {
 
 function clearFile(slot, rerender=true) {
   if (rerender && H3V2_MEDIA[slot]) h3V2RemoveMedia(slot).catch(()=>{});
+  if (rerender && QWEN_NSFW_MEDIA[slot]) qwenNsfwRemoveMedia(slot).catch(()=>{});
   if (rerender && LONG_H3_MEDIA[slot]) longH3RemoveImage(slot).catch(()=>{});
   if (state.objectUrls[slot]) {
     URL.revokeObjectURL(state.objectUrls[slot]);
@@ -1250,6 +1271,7 @@ function setFile(slot, file) {
   state.files[slot] = file;
   if (LONG_H3_MEDIA[slot]) longH3SaveImage(slot, file).catch(()=>toast('图片本地保存失败','bad'));
   if (H3V2_MEDIA[slot]) h3V2SaveMedia(slot, file).catch(()=>toast('参考素材本地保存失败','bad'));
+  if (QWEN_NSFW_MEDIA[slot]) qwenNsfwSaveMedia(slot, file).catch(()=>toast('参考素材本地保存失败','bad'));
   if (file.type.startsWith('image/') || file.type.startsWith('video/')) {
     state.objectUrls[slot] = URL.createObjectURL(file);
   }
@@ -1257,7 +1279,7 @@ function setFile(slot, file) {
 }
 
 function renderFileSlot(slot) {
-  const config = MEDIA[slot] || MULTI_FAST_MEDIA[slot] || QWEN_MULTI_EDIT_MEDIA[slot] || LONG_H3_MEDIA[slot] || H3V2_MEDIA[slot];
+  const config = MEDIA[slot] || MULTI_FAST_MEDIA[slot] || QWEN_MULTI_EDIT_MEDIA[slot] || QWEN_NSFW_MEDIA[slot] || LONG_H3_MEDIA[slot] || H3V2_MEDIA[slot];
   if (!config) return;
   const file = state.files[slot];
   const el = $('.upload-slot[data-slot="' + slot + '"]');
@@ -1363,7 +1385,7 @@ function activeWorkspaceUploadSlots() {
   return [...workspace.querySelectorAll('.upload-slot[data-slot]')]
     .map(el => {
       const slot = el.dataset.slot;
-      const config = MEDIA[slot] || MULTI_FAST_MEDIA[slot] || QWEN_MULTI_EDIT_MEDIA[slot] || LONG_H3_MEDIA[slot] || H3V2_MEDIA[slot];
+      const config = MEDIA[slot] || MULTI_FAST_MEDIA[slot] || QWEN_MULTI_EDIT_MEDIA[slot] || QWEN_NSFW_MEDIA[slot] || LONG_H3_MEDIA[slot] || H3V2_MEDIA[slot];
       return config ? {el, slot, config} : null;
     })
     .filter(Boolean);
@@ -3802,6 +3824,8 @@ $('#clearLocal').onclick = () => {
     LS.qwenMultiEditAspect,
     LS.qwenMultiEditQuality,
     LS.qwenMultiEditCount,
+    LS.qwenNsfwPrompt,
+    LS.qwenNsfwAspect,
     LS.appFilter,
     LS.inst,
     LS.runtimeTasks
@@ -3816,11 +3840,13 @@ $('#clearLocal').onclick = () => {
   renderSkinUpscaleIdle();
   clearSkinUpscaleFile();
   renderQwenMultiEditIdle();
+  renderQwenNsfwIdle();
   renderMultiFastIdle();
   renderLongH3Idle();
   renderH3V2Idle();
   clearAllLongH3Images().catch(()=>{});
   h3V2ClearAllMedia().catch(()=>{});
+  qwenNsfwClearAllMedia().catch(()=>{});
   renderAppFilter('all', false, false);
   setActiveApp(APP_KEYS.video);
   toast('本地应用配置已重置');
@@ -3831,10 +3857,12 @@ updateKeyUI();
 Object.keys(MEDIA).forEach(renderFileSlot);
 Object.keys(MULTI_FAST_MEDIA).forEach(renderFileSlot);
 Object.keys(QWEN_MULTI_EDIT_MEDIA).forEach(renderFileSlot);
+Object.keys(QWEN_NSFW_MEDIA).forEach(renderFileSlot);
 Object.keys(LONG_H3_MEDIA).forEach(renderFileSlot);
 Object.keys(H3V2_MEDIA).forEach(renderFileSlot);
 restoreLongH3Images().catch(()=>{});
 h3V2RestoreMedia().catch(()=>{});
+qwenNsfwRestoreMedia().catch(()=>{});
 ensureMaterialLibrary().catch(() => updateMaterialLibraryBadges());
 renderVideoIdle();
 renderImageIdle();
@@ -3843,6 +3871,7 @@ renderKQ12Idle();
 renderSkinUpscaleIdle();
 renderSkinUpscaleInput();
 renderQwenMultiEditIdle();
+renderQwenNsfwIdle();
 renderMultiFastIdle();
 renderLongH3Idle();
 renderH3V2Idle();
