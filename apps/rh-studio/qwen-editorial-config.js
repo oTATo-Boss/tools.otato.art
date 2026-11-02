@@ -39,7 +39,7 @@ function qwenEditorialBuildNodes(images=[], {prompt='',aspect='9:16 (Portrait Wi
     node('526','lora_name',QWEN_EDITORIAL_LORA),
     node('526','strength_model','0.4'),
     node('525','value','false'),
-    node('554','text','以下为高级设置区，不懂请保持默认。\\nAdvanced Settings Section. Leave as default if unsure.'),
+    node('554','text','以下为高级设置区，不懂请保持默认。\nAdvanced Settings Section. Leave as default if unsure.'),
     node('479','unet_name',QWEN_EDITORIAL_BASE_MODEL),
     node('484','sampler_name','er_sde'),
     node('484','scheduler','beta'),
