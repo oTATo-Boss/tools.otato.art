@@ -86,3 +86,34 @@ test('workspace, script imports, shared media, task recovery and build are regis
   assert.match(buildScript,/qwen-nsfw-config\.js/);
   assert.match(buildScript,/qwen-nsfw-runtime\.js/);
 });
+
+
+test('startup registers Qwen generation controls before the shared app script declares its selector', async () => {
+  const handlers = new Map();
+  const document = {
+    getElementById(id) {
+      return {addEventListener(event, callback) {handlers.set(id + ':' + event, callback);}};
+    },
+    querySelectorAll() {return [];}
+  };
+  let message = '';
+  let opened = false;
+  // There is intentionally no '$' selector in the context.
+  runInNewContext(read('apps/rh-studio/qwen-nsfw-runtime.js'), {
+    document, apiKey:()=>'', toast:value=>{message=value;},
+    openSettings:()=>{opened=true;}
+  });
+  for(const [id,event] of [
+    ['qwenNsfwPromptInput','input'],
+    ['qwenNsfwAspectRatio','change'],
+    ['qwenNsfwRunBtn','click'],
+    ['qwenNsfwDownloadBtn','click']
+  ]) {
+    assert.equal(typeof handlers.get(id + ':' + event), 'function');
+  }
+  await handlers.get('qwenNsfwRunBtn:click')();
+  assert.match(message,/API Key/);
+  assert.equal(opened,true);
+  const html = read('apps/rh-studio/index.html');
+  assert.match(html,/qwen-nsfw-runtime\.js\?v=20261102-clickfix-1/);
+});
