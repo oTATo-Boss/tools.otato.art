@@ -38,9 +38,9 @@ test('LoRA model names and weights remain fixed even when overridden in settings
     lora2Name:'override.safetensors', lora2Strength:'0'
   });
   assert.equal(field(nodes,'534','lora_name'),'NSFW Qwen by TheseAlpacas V2.safetensors');
-  assert.equal(field(nodes,'534','strength_model'),'0.8');
-  assert.equal(field(nodes,'526','lora_name'),'Pornmaster_QI2.1_Breasts_Slider_V1.safetensors');
-  assert.equal(field(nodes,'526','strength_model'),'1');
+  assert.equal(field(nodes,'534','strength_model'),'0.4');
+  assert.equal(field(nodes,'526','lora_name'),'casual_snapshot_realism_qwen21.safetensors');
+  assert.equal(field(nodes,'526','strength_model'),'0.8');
   assert.equal(field(nodes,'13','aspect_ratio'),'3:4 (Portrait Standard)');
   assert.deepEqual(nodes.slice(0,6).map(n => n.fieldValue), images);
 });
@@ -66,6 +66,7 @@ test('workspace, script imports, shared media, task recovery and build are regis
   const buildScript = read('apps/rh-studio/build.mjs');
   assert.match(html,/data-app="qwen-image-2-1-nsfw"/);
   assert.match(html,/id="workspaceQwenNsfw"/);
+  assert.match(html,/qwen-nsfw-config\.js\?v=20261102-lora-04-08/);
   for(const nodeId of ['476','491','477','492','495','494']) {
     assert.match(html,new RegExp('data-slot="nsfwImg'+nodeId+'"'));
   }

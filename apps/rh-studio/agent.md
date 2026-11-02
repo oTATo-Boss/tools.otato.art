@@ -649,7 +649,7 @@ Cloudflare Pages 静态资源与 Pages Functions 必须同时承载：
 - `appKey`：`qwen-image-2-1-nsfw`；AI App ID：`2104225323949101057`，类型：多图图片编辑。
 - 图片节点（字段 image）：476、491、477、492、495、494；图 1 必填，其余可空（None）。
 - Prompt：497 / prompt；画幅：13 / aspect_ratio，八种已确认选项。
-- 固定 LoRA：534 / lora_name = NSFW Qwen by TheseAlpacas V2.safetensors，strength_model = 0.8；526 / lora_name = Pornmaster_QI2.1_Breasts_Slider_V1.safetensors，strength_model = 1。
+- 固定 LoRA：534 / lora_name = NSFW Qwen by TheseAlpacas V2.safetensors，strength_model = 0.4；526 / lora_name = casual_snapshot_realism_qwen21.safetensors，strength_model = 0.8。
 - API 示例固定节点：532/value=2.0000000000000004、521/value=false、527/value=1、515/value=false、525/value=false、528/value=true。
 - 未确认节点的业务意义前不添加对应 UI 控件；LoRA 名称与权重不允许修改。
 - 图片素材使用独立 IndexedDB；任务状态和历史记录复用全局机制。

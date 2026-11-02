@@ -71,8 +71,8 @@ Task ID import to recover existing tasks as needed.
 
 - 应用键：`qwen-image-2-1-nsfw`；RunningHub AI App ID：`2104225323949101057`。
 - 独立六图输入节点：476 / 491 / 477 / 492 / 495 / 494；Prompt 为 497/prompt，画幅为 13/aspect_ratio。
-- 固定 LoRA 1：NSFW Qwen by TheseAlpacas V2.safetensors，Node 534 / strength_model = 0.8。
-- 固定 LoRA 2：Pornmaster_QI2.1_Breasts_Slider_V1.safetensors，Node 526 / strength_model = 1。
+- 固定 LoRA 1：NSFW Qwen by TheseAlpacas V2.safetensors，Node 534 / strength_model = 0.4。
+- 固定 LoRA 2：casual_snapshot_realism_qwen21.safetensors，Node 526 / strength_model = 0.8。
 - 其余节点（532、521、527、515、525、528）保持用户提供的 API 示例值，业务意义未确认之前不暴露控件。
 - 全局使用既有 RunningHub API Key 与实例设置，复用媒体上传与生成查询 API。
 - 支持点击、拖拽、Cmd/Ctrl+V 顺序填入；独立 IndexedDB 持久化图片，刷新可恢复任务进度与生成记录。
