@@ -61,6 +61,14 @@ const APPS = {
     title:'Qwen Image 2.1 NSFW 多图编辑',
     type:'image'
   },
+  'qwen-image-2-1-editorial': {
+    key:'qwen-image-2-1-editorial',
+    appId:'2104057271167791105',
+    name:'Qwen 2.1 高对比时尚摄影',
+    subtitle:'Editorial Fashion · Noct Q V4',
+    title:'Qwen 2.1 高对比时尚摄影 · High-Contrast Editorial Fashion',
+    type:'image'
+  },
   'minimax-h3-beginner-v2': {
     key:'minimax-h3-beginner-v2',
     appId:'2101232638873858050',
@@ -95,6 +103,7 @@ const APP_KEYS = {
   skinUpscale: 'skin-upscale',
   qwenMultiEdit: 'qwen-image-2-1-multi-edit',
   qwenNsfw: 'qwen-image-2-1-nsfw',
+  qwenEditorial: 'qwen-image-2-1-editorial',
   multiFast: 'minimax-h3-multi-fast',
   longH3: 'minimax-h3-long',
   h3BeginnerV2: 'minimax-h3-beginner-v2'
@@ -127,6 +136,8 @@ const LS = {
   qwenMultiEditCount: 'rhstudio.qwenImage21MultiEdit.count',
   qwenNsfwPrompt: 'rhstudio.qwenNsfw.prompt',
   qwenNsfwAspect: 'rhstudio.qwenNsfw.aspect',
+  qwenEditorialPrompt: 'rhstudio.qwenEditorial.prompt',
+  qwenEditorialAspect: 'rhstudio.qwenEditorial.aspect',
   appFilter: 'rhstudio.appFilter',
   inst: 'rhstudio.instanceType',
   history: 'rhstudio.generationHistory',
@@ -341,6 +352,7 @@ function setActiveApp(key, persist=true) {
   $('#workspaceSkinUpscale').classList.toggle('hidden', key !== APP_KEYS.skinUpscale);
   $('#workspaceQwenMultiEdit').classList.toggle('hidden', key !== APP_KEYS.qwenMultiEdit);
   $('#workspaceQwenNsfw').classList.toggle('hidden', key !== APP_KEYS.qwenNsfw);
+  $('#workspaceQwenEditorial').classList.toggle('hidden', key !== APP_KEYS.qwenEditorial);
   $('#workspaceMultiFast').classList.toggle('hidden', key !== APP_KEYS.multiFast);
   $('#workspaceLongH3').classList.toggle('hidden', key !== APP_KEYS.longH3);
   $('#workspaceH3V2').classList.toggle('hidden', key !== APP_KEYS.h3BeginnerV2);
@@ -482,6 +494,7 @@ function loadConfig() {
   longH3LoadConfig();
   h3V2LoadConfig();
   qwenNsfwLoadConfig();
+  qwenEditorialLoadConfig();
   state.appFilter = localStorage.getItem(LS.appFilter) || 'all';
   $('#instanceType').value = localStorage.getItem(LS.inst) || 'default';
 
@@ -750,6 +763,13 @@ function runtimeViews() {
       renderSuccess:renderQwenMultiEditSuccess,
       renderFailed:renderQwenMultiEditFailed,
       query:queryQwenMultiEditTask
+    },
+    [APP_KEYS.qwenEditorial]: {
+      state:qwenEditorialState,
+      renderLoading:renderQwenEditorialLoading,
+      renderSuccess:renderQwenEditorialSuccess,
+      renderFailed:renderQwenEditorialFailed,
+      query:queryQwenEditorialTask
     },
     [APP_KEYS.qwenNsfw]: {
       state:qwenNsfwState,
@@ -1250,6 +1270,7 @@ async function fillSavedMaterials() {
 function clearFile(slot, rerender=true) {
   if (rerender && H3V2_MEDIA[slot]) h3V2RemoveMedia(slot).catch(()=>{});
   if (rerender && QWEN_NSFW_MEDIA[slot]) qwenNsfwRemoveMedia(slot).catch(()=>{});
+  if (rerender && QWEN_EDITORIAL_MEDIA[slot]) qwenEditorialRemoveMedia(slot).catch(()=>{});
   if (rerender && LONG_H3_MEDIA[slot]) longH3RemoveImage(slot).catch(()=>{});
   if (state.objectUrls[slot]) {
     URL.revokeObjectURL(state.objectUrls[slot]);
@@ -1272,6 +1293,7 @@ function setFile(slot, file) {
   if (LONG_H3_MEDIA[slot]) longH3SaveImage(slot, file).catch(()=>toast('图片本地保存失败','bad'));
   if (H3V2_MEDIA[slot]) h3V2SaveMedia(slot, file).catch(()=>toast('参考素材本地保存失败','bad'));
   if (QWEN_NSFW_MEDIA[slot]) qwenNsfwSaveMedia(slot, file).catch(()=>toast('参考素材本地保存失败','bad'));
+  if (QWEN_EDITORIAL_MEDIA[slot]) qwenEditorialSaveMedia(slot, file).catch(()=>toast('参考素材本地保存失败','bad'));
   if (file.type.startsWith('image/') || file.type.startsWith('video/')) {
     state.objectUrls[slot] = URL.createObjectURL(file);
   }
@@ -1279,7 +1301,7 @@ function setFile(slot, file) {
 }
 
 function renderFileSlot(slot) {
-  const config = MEDIA[slot] || MULTI_FAST_MEDIA[slot] || QWEN_MULTI_EDIT_MEDIA[slot] || QWEN_NSFW_MEDIA[slot] || LONG_H3_MEDIA[slot] || H3V2_MEDIA[slot];
+  const config = MEDIA[slot] || MULTI_FAST_MEDIA[slot] || QWEN_MULTI_EDIT_MEDIA[slot] || QWEN_NSFW_MEDIA[slot] || QWEN_EDITORIAL_MEDIA[slot] || LONG_H3_MEDIA[slot] || H3V2_MEDIA[slot];
   if (!config) return;
   const file = state.files[slot];
   const el = $('.upload-slot[data-slot="' + slot + '"]');
@@ -1385,7 +1407,7 @@ function activeWorkspaceUploadSlots() {
   return [...workspace.querySelectorAll('.upload-slot[data-slot]')]
     .map(el => {
       const slot = el.dataset.slot;
-      const config = MEDIA[slot] || MULTI_FAST_MEDIA[slot] || QWEN_MULTI_EDIT_MEDIA[slot] || QWEN_NSFW_MEDIA[slot] || LONG_H3_MEDIA[slot] || H3V2_MEDIA[slot];
+      const config = MEDIA[slot] || MULTI_FAST_MEDIA[slot] || QWEN_MULTI_EDIT_MEDIA[slot] || QWEN_NSFW_MEDIA[slot] || QWEN_EDITORIAL_MEDIA[slot] || LONG_H3_MEDIA[slot] || H3V2_MEDIA[slot];
       return config ? {el, slot, config} : null;
     })
     .filter(Boolean);
@@ -3826,6 +3848,8 @@ $('#clearLocal').onclick = () => {
     LS.qwenMultiEditCount,
     LS.qwenNsfwPrompt,
     LS.qwenNsfwAspect,
+    LS.qwenEditorialPrompt,
+    LS.qwenEditorialAspect,
     LS.appFilter,
     LS.inst,
     LS.runtimeTasks
@@ -3841,12 +3865,14 @@ $('#clearLocal').onclick = () => {
   clearSkinUpscaleFile();
   renderQwenMultiEditIdle();
   renderQwenNsfwIdle();
+  renderQwenEditorialIdle();
   renderMultiFastIdle();
   renderLongH3Idle();
   renderH3V2Idle();
   clearAllLongH3Images().catch(()=>{});
   h3V2ClearAllMedia().catch(()=>{});
   qwenNsfwClearAllMedia().catch(()=>{});
+  qwenEditorialClearAllMedia().catch(()=>{});
   renderAppFilter('all', false, false);
   setActiveApp(APP_KEYS.video);
   toast('本地应用配置已重置');
@@ -3858,11 +3884,13 @@ Object.keys(MEDIA).forEach(renderFileSlot);
 Object.keys(MULTI_FAST_MEDIA).forEach(renderFileSlot);
 Object.keys(QWEN_MULTI_EDIT_MEDIA).forEach(renderFileSlot);
 Object.keys(QWEN_NSFW_MEDIA).forEach(renderFileSlot);
+Object.keys(QWEN_EDITORIAL_MEDIA).forEach(renderFileSlot);
 Object.keys(LONG_H3_MEDIA).forEach(renderFileSlot);
 Object.keys(H3V2_MEDIA).forEach(renderFileSlot);
 restoreLongH3Images().catch(()=>{});
 h3V2RestoreMedia().catch(()=>{});
 qwenNsfwRestoreMedia().catch(()=>{});
+qwenEditorialRestoreMedia().catch(()=>{});
 ensureMaterialLibrary().catch(() => updateMaterialLibraryBadges());
 renderVideoIdle();
 renderImageIdle();
@@ -3872,6 +3900,7 @@ renderSkinUpscaleIdle();
 renderSkinUpscaleInput();
 renderQwenMultiEditIdle();
 renderQwenNsfwIdle();
+renderQwenEditorialIdle();
 renderMultiFastIdle();
 renderLongH3Idle();
 renderH3V2Idle();
