@@ -235,11 +235,13 @@ async function qwenNsfwRestoreMedia() {
   });
 }
 
-$('#qwenNsfwPromptInput').addEventListener('input', qwenNsfwSaveConfig);
-$('#qwenNsfwAspectRatio').addEventListener('change', qwenNsfwSaveConfig);
-$('#qwenNsfwRunBtn').addEventListener('click', runQwenNsfwTask);
-$('#qwenNsfwDownloadBtn').addEventListener('click', () =>
-  triggerDownload(qwenNsfwState, $('#qwenNsfwDownloadBtn'), 'rh-studio-qwen-nsfw')
+// This runtime loads before app.js, which declares the dollar selector.
+// Use native DOM methods at script evaluation to avoid early ReferenceError.
+document.getElementById('qwenNsfwPromptInput').addEventListener('input', qwenNsfwSaveConfig);
+document.getElementById('qwenNsfwAspectRatio').addEventListener('change', qwenNsfwSaveConfig);
+document.getElementById('qwenNsfwRunBtn').addEventListener('click', runQwenNsfwTask);
+document.getElementById('qwenNsfwDownloadBtn').addEventListener('click', () =>
+  triggerDownload(qwenNsfwState, document.getElementById('qwenNsfwDownloadBtn'), 'rh-studio-qwen-nsfw')
 );
 document.querySelectorAll('#workspaceQwenNsfw .upload-slot[data-slot]').forEach(el => {
   el.addEventListener('dragover', event => {
