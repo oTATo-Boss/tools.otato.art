@@ -653,3 +653,13 @@ Cloudflare Pages 静态资源与 Pages Functions 必须同时承载：
 - API 示例固定节点：532/value=2.0000000000000004、521/value=false、527/value=1、515/value=false、525/value=false、528/value=true。
 - 未确认节点的业务意义前不添加对应 UI 控件；LoRA 名称与权重不允许修改。
 - 图片素材使用独立 IndexedDB；任务状态和历史记录复用全局机制。
+
+
+### 14.11 Qwen 2.1 高对比时尚摄影（High-Contrast Editorial Fashion）
+
+- `appKey`: `qwen-image-2-1-editorial`；AI App ID：`2104057271167791105`；类型：纯提示词生图 / 多图参考编辑。
+- 图片输入：Node 476/491/477/492/495/494（image）；0–6 张可选，空节点传 `None`；提示词 497/prompt 必填。
+- 画幅：13/aspect_ratio，8 选项，默认 9:16；13/megapixels 固定 2；527/value 固定 1。
+- 截图底模：479/unet_name = `noctQUncensoredRealismBuiltOn_v40Base_bf16.safetensors`；LoRA1：510/lora_name = `NSFW Qwen by TheseAlpacas V2.safetensors`，strength_model=`0.8000000000000002`；LoRA2：526/lora_name = `QWEN真实时尚摄影高对比高级感大片风格_电商时尚真实高级感摄影大片.safetensors`，strength_model=`0.4`。
+- API 固定值：528/value=false、515/value=false、521/value=false、525/value=false、554/text=原文；484/sampler_name=er_sde、484/scheduler=beta、484/steps=40、484/cfg=3.5。布尔节点含义未核实，不猜测映射。
+- 独立界面、图片缓存及参数存储；共用 RH Studio 全局 API Key、运行实例、图片上传、轮询、预览、历史与故障诊断。
