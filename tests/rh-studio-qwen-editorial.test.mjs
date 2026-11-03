@@ -66,7 +66,7 @@ test('navigation, independent slots, shared media wiring and build assets',()=>{
   assert.match(html,/qwen-editorial-config\.js\?v=20261103-1/);
   assert.match(html,/qwen-editorial-runtime\.js\?v=20261103-1/);
   assert.ok(html.indexOf('qwen-editorial-config.js')<html.indexOf('qwen-editorial-runtime.js'));
-  assert.ok(html.indexOf('qwen-editorial-runtime.js')<html.indexOf('./app.js?v=20261103-qwen-snapshot-1'));
+  assert.ok(html.indexOf('qwen-editorial-runtime.js')<html.indexOf('./app.js?v=20261103-three-apps-1'));
   assert.match(app,/qwenEditorial: 'qwen-image-2-1-editorial'/);
   assert.match(app,/\[APP_KEYS\.qwenEditorial\]:/);
   assert.match(app,/QWEN_EDITORIAL_MEDIA\[slot\]/);
@@ -138,12 +138,12 @@ test('Qwen defaults to Plus without replacing a saved global instance or other a
   const context={$,
     $$:()=>[],state:{},APP_KEYS:{video:'minimax-h3',qwenEditorial:'qwen-image-2-1-editorial'},LS:{inst:'instance',active:'active'},
     localStorage:{getItem:()=>saved,setItem(){}},
-    syncAutoGenerateAvailability(){},requestAnimationFrame(){}
+    requestAnimationFrame(){}
   };
   runInNewContext(registry+switchApp,context);
   runInNewContext("setActiveApp('qwen-image-2-1-editorial')",context);
   assert.equal($('#instanceType').value,'plus');
-  runInNewContext("setActiveApp('minimax-h3')",context);
+  runInNewContext("setActiveApp('minimax-h3-long')",context);
   assert.equal($('#instanceType').value,'default');
   for(const choice of ['default','plus','ultra']){
     saved=choice;$('#instanceType').value=choice;

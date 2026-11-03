@@ -133,7 +133,6 @@ test('UI exposes exactly aspect, resolution, duration; global settings controls 
   assert.match(app,/H3V2_MEDIA\[slot\]/);
   assert.match(html,/data-app="minimax-h3-beginner-v2"/);
   assert.match(html,/data-app="minimax-h3-long"/);
-  assert.match(html,/data-app="minimax-h3-multi-fast"/);
   assert.match(pack,/minimax-h3-v2-config\.js/);
   assert.match(pack,/minimax-h3-v2-runtime\.js/);
 });

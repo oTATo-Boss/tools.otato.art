@@ -2,6 +2,10 @@
 
 RunningHub API workflow console.
 
+## Current apps
+
+Only three apps are active: Qwen 2.1 写实抓拍 (image), MiniMax-H3 V2 小白全能版 (video), and MiniMax-H3 无限长视频 (video). The eight retired apps and their dedicated workspaces/runtimes have been removed. Existing generation history and saved browser materials are preserved; removed-app links fall back to an active app without importing an old task into it.
+
 ## Features
 
 - RunningHub AI App execution
@@ -65,18 +69,6 @@ Task ID import to recover existing tasks as needed.
 - Main generation controls: aspect ratio, resolution (480P/720P/1080P), duration (5–15s). A collapsible panel exposes **four independent LoRA strengths** (defaults 0.4 / 0.5 / 0.6 / 0.2, persisted locally); LoRA filenames, trigger, base model and workflow flags remain fixed to the Skill v4 snapshot. Running instance comes from global RH Studio Settings (1080P requires Ultra).
 - Output URLs normally expire after 24 hours. Video generation and the new LoRA combination have not been live-verified.
 - Tests: `tests/rh-studio-minimax-h3-v2.test.mjs`.
-
-
-## Qwen Image 2.1 NSFW 多图编辑 · 固定双 LoRA
-
-- 应用键：`qwen-image-2-1-nsfw`；RunningHub AI App ID：`2104225323949101057`。
-- 独立六图输入节点：476 / 491 / 477 / 492 / 495 / 494；Prompt 为 497/prompt，画幅为 13/aspect_ratio。
-- 固定 LoRA 1：NSFW Qwen by TheseAlpacas V2.safetensors，Node 534 / strength_model = 0.4。
-- 固定 LoRA 2：casual_snapshot_realism_qwen21.safetensors，Node 526 / strength_model = 0.8。
-- 其余节点（532、521、527、515、525、528）保持用户提供的 API 示例值，业务意义未确认之前不暴露控件。
-- 全局使用既有 RunningHub API Key 与实例设置，复用媒体上传与生成查询 API。
-- 支持点击、拖拽、Cmd/Ctrl+V 顺序填入；独立 IndexedDB 持久化图片，刷新可恢复任务进度与生成记录。
-- 代码：qwen-nsfw-config.js、qwen-nsfw-runtime.js；测试：tests/rh-studio-qwen-nsfw.test.mjs。
 
 
 ## Qwen 2.1 写实抓拍 · Snapshot Realism
