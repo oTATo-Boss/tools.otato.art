@@ -79,12 +79,14 @@ Task ID import to recover existing tasks as needed.
 - 代码：qwen-nsfw-config.js、qwen-nsfw-runtime.js；测试：tests/rh-studio-qwen-nsfw.test.mjs。
 
 
-## Qwen 2.1 高对比时尚摄影 · High-Contrast Editorial Fashion
+## Qwen 2.1 写实抓拍 · Snapshot Realism
 
 - App key: `qwen-image-2-1-editorial`; RunningHub AI App ID: `2104057271167791105`.
 - Supports text-only or up to six optional reference images (476/491/477/492/495/494), editable Prompt (497/prompt), eight aspect ratios (13/aspect_ratio), fixed 2MP (13/megapixels) and one output (527/value).
 - Screenshot-selected base model (479/unet_name): `noctQUncensoredRealismBuiltOn_v40Base_bf16.safetensors`.
-- LoRA 1 (510/lora_name): `NSFW Qwen by TheseAlpacas V2.safetensors`, strength `0.8000000000000002`; LoRA 2 (526/lora_name): `QWEN真实时尚摄影高对比高级感大片风格_电商时尚真实高级感摄影大片.safetensors`, strength `0.4`.
-- Other API fields stay fixed: nodes 528/515/521/525=false, node 554 original note, sampler 484 (er_sde, beta, 40 steps, cfg 3.5). Undocumented boolean switch names are not inferred.
+- LoRA 1 (510/lora_name): `casual_snapshot_realism_qwen21.safetensors`, strength `0.8`; LoRA 2 (526/lora_name): `cndamiph_Candid_Amateur_iPhone_Qwen21_v1.safetensors`, strength `0.5`.
+- Other API fields stay fixed: nodes 528/515=true (prompt enhancement and acceleration), 521/525=false, node 554 original note, sampler 484 (er_sde, beta, 40 steps, cfg 3.5).
 - Existing shared upload, run, query, history, preview, diagnostics, and downloads; isolated localStorage keys `rhstudio.qwenEditorial.*` and IndexedDB `rhstudio-qwen-editorial-materials`.
 - Source: `qwen-editorial-config.js` / `qwen-editorial-runtime.js`. Tests: `tests/rh-studio-qwen-editorial.test.mjs`.
+
+- Defaults synced to RH-Qwen Skill 3.0.1 on 2026-11-03. Plus is selected when this app opens without a saved global instance; an explicitly saved global choice always wins. Existing app key, media storage and history remain compatible. No new model-specific trigger is assumed; no paid generation was submitted during this configuration update.

@@ -64,9 +64,10 @@ const APPS = {
   'qwen-image-2-1-editorial': {
     key:'qwen-image-2-1-editorial',
     appId:'2104057271167791105',
-    name:'Qwen 2.1 高对比时尚摄影',
-    subtitle:'Editorial Fashion · Noct Q V4',
-    title:'Qwen 2.1 高对比时尚摄影 · High-Contrast Editorial Fashion',
+    name:'Qwen 2.1 写实抓拍',
+    subtitle:'Snapshot Realism · Noct Q V4',
+    title:'Qwen 2.1 写实抓拍 · Snapshot Realism',
+    defaultInstance:'plus',
     type:'image'
   },
   'minimax-h3-beginner-v2': {
@@ -358,6 +359,7 @@ function setActiveApp(key, persist=true) {
   $('#workspaceH3V2').classList.toggle('hidden', key !== APP_KEYS.h3BeginnerV2);
 
   const app = APPS[key];
+  if (!localStorage.getItem(LS.inst)) $('#instanceType').value = app.defaultInstance || 'default';
   $('#currentAppTitle').textContent = app.title;
   $('#settingsCurrentApp').textContent = app.title;
   syncAutoGenerateAvailability();

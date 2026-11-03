@@ -24,7 +24,8 @@ test('24 API fields work with no reference image',()=>{
   assert.equal(field(nodes,'13','aspect_ratio'),'9:16 (Portrait Widescreen)');
   assert.equal(field(nodes,'13','megapixels'),'2');
   assert.equal(field(nodes,'527','value'),'1');
-  for(const id of ['528','515','521','525'])assert.equal(field(nodes,id,'value'),'false');
+  for(const id of ['528','515'])assert.equal(field(nodes,id,'value'),'true');
+  for(const id of ['521','525'])assert.equal(field(nodes,id,'value'),'false');
   assert.equal(field(nodes,'554','text'),'以下为高级设置区，不懂请保持默认。\nAdvanced Settings Section. Leave as default if unsure.');
   assert.equal(field(nodes,'484','sampler_name'),'er_sde');
   assert.equal(field(nodes,'484','scheduler'),'beta');
@@ -36,10 +37,10 @@ test('24 API fields work with no reference image',()=>{
 test('screenshot checkpoint and LoRA combination remain locked',()=>{
   const nodes=build(['example.png'],{prompt:'studio fashion',lora1Strength:0,lora2Name:'overridden'});
   assert.equal(field(nodes,'479','unet_name'),'noctQUncensoredRealismBuiltOn_v40Base_bf16.safetensors');
-  assert.equal(field(nodes,'510','lora_name'),'NSFW Qwen by TheseAlpacas V2.safetensors');
-  assert.equal(field(nodes,'510','strength_model'),'0.8000000000000002');
-  assert.equal(field(nodes,'526','lora_name'),'QWEN真实时尚摄影高对比高级感大片风格_电商时尚真实高级感摄影大片.safetensors');
-  assert.equal(field(nodes,'526','strength_model'),'0.4');
+  assert.equal(field(nodes,'510','lora_name'),'casual_snapshot_realism_qwen21.safetensors');
+  assert.equal(field(nodes,'510','strength_model'),'0.8');
+  assert.equal(field(nodes,'526','lora_name'),'cndamiph_Candid_Amateur_iPhone_Qwen21_v1.safetensors');
+  assert.equal(field(nodes,'526','strength_model'),'0.5');
   assert.equal(field(nodes,'476','image'),'example.png');
   assert.equal(field(nodes,'491','image'),'None');
 });
@@ -62,10 +63,10 @@ test('navigation, independent slots, shared media wiring and build assets',()=>{
   assert.match(html,/id="workspaceQwenEditorial"/);
   for(const id of ['476','491','477','492','495','494'])
     assert.match(html,new RegExp('data-slot="editorialImg'+id+'"'));
-  assert.match(html,/qwen-editorial-config\.js\?v=20261102-1/);
-  assert.match(html,/qwen-editorial-runtime\.js\?v=20261102-1/);
+  assert.match(html,/qwen-editorial-config\.js\?v=20261103-1/);
+  assert.match(html,/qwen-editorial-runtime\.js\?v=20261103-1/);
   assert.ok(html.indexOf('qwen-editorial-config.js')<html.indexOf('qwen-editorial-runtime.js'));
-  assert.ok(html.indexOf('qwen-editorial-runtime.js')<html.indexOf('./app.js?v=20261102-editorial-1'));
+  assert.ok(html.indexOf('qwen-editorial-runtime.js')<html.indexOf('./app.js?v=20261103-qwen-snapshot-1'));
   assert.match(app,/qwenEditorial: 'qwen-image-2-1-editorial'/);
   assert.match(app,/\[APP_KEYS\.qwenEditorial\]:/);
   assert.match(app,/QWEN_EDITORIAL_MEDIA\[slot\]/);
@@ -124,4 +125,29 @@ test('clicking generate submits a text-only task with all six None images',async
   assert.ok(submitted.nodes.slice(0,6).every(n=>n.fieldValue==='None'));
   assert.equal(history?.task.taskId,'test-id');
   assert.equal(el('qwenEditorialRunBtn').disabled,false);
+});
+
+// Exercise the real app switch: new visitors get the app default, while saved global choices win.
+test('Qwen defaults to Plus without replacing a saved global instance or other app defaults',()=>{
+  const app=read('apps/rh-studio/app.js');
+  const registry=app.slice(app.indexOf('const APPS ='),app.indexOf('const APP_KEYS ='));
+  const switchApp=app.slice(app.indexOf('function setActiveApp('),app.indexOf('function renderAppFilter('));
+  const elements=new Map();
+  const $=key=>{if(!elements.has(key))elements.set(key,{value:'default',classList:{toggle(){}},textContent:''});return elements.get(key);};
+  let saved=null;
+  const context={$,
+    $$:()=>[],state:{},APP_KEYS:{video:'minimax-h3',qwenEditorial:'qwen-image-2-1-editorial'},LS:{inst:'instance',active:'active'},
+    localStorage:{getItem:()=>saved,setItem(){}},
+    syncAutoGenerateAvailability(){},requestAnimationFrame(){}
+  };
+  runInNewContext(registry+switchApp,context);
+  runInNewContext("setActiveApp('qwen-image-2-1-editorial')",context);
+  assert.equal($('#instanceType').value,'plus');
+  runInNewContext("setActiveApp('minimax-h3')",context);
+  assert.equal($('#instanceType').value,'default');
+  for(const choice of ['default','plus','ultra']){
+    saved=choice;$('#instanceType').value=choice;
+    runInNewContext("setActiveApp('qwen-image-2-1-editorial')",context);
+    assert.equal($('#instanceType').value,choice);
+  }
 });

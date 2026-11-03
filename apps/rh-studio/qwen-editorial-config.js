@@ -1,9 +1,9 @@
-// RunningHub AI App 2104057271167791105 · High-Contrast Editorial Fashion Photography.
+// RunningHub AI App 2104057271167791105 · snapshot realism · Skill 3.0.1 defaults.
 // The screenshot-selected base checkpoint and both LoRA files are locked here.
 // Unidentified flags and sampling parameters match the supplied RunningHub API sample.
 const QWEN_EDITORIAL_APP_ID = '2104057271167791105';
 const QWEN_EDITORIAL_BASE_MODEL = 'noctQUncensoredRealismBuiltOn_v40Base_bf16.safetensors';
-const QWEN_EDITORIAL_LORA = 'QWEN真实时尚摄影高对比高级感大片风格_电商时尚真实高级感摄影大片.safetensors';
+const QWEN_EDITORIAL_LORA = 'cndamiph_Candid_Amateur_iPhone_Qwen21_v1.safetensors';
 const QWEN_EDITORIAL_ASPECTS = Object.freeze([
   '1:1 (Square)', '2:3 (Portrait Photo)', '3:2 (Photo)',
   '3:4 (Portrait Standard)', '4:3 (Standard)',
@@ -28,16 +28,16 @@ function qwenEditorialBuildNodes(images=[], {prompt='',aspect='9:16 (Portrait Wi
       node(nodeId,'image',String(images[index]||'None').trim()||'None')
     ),
     node('497','prompt',String(prompt).trim()),
-    node('528','value','false'),
-    node('515','value','false'),
+    node('528','value','true'),
+    node('515','value','true'),
     node('13','aspect_ratio',aspect),
     node('521','value','false'),
     node('13','megapixels','2'),
     node('527','value','1'),
-    node('510','lora_name','NSFW Qwen by TheseAlpacas V2.safetensors'),
-    node('510','strength_model','0.8000000000000002'),
+    node('510','lora_name','casual_snapshot_realism_qwen21.safetensors'),
+    node('510','strength_model','0.8'),
     node('526','lora_name',QWEN_EDITORIAL_LORA),
-    node('526','strength_model','0.4'),
+    node('526','strength_model','0.5'),
     node('525','value','false'),
     node('554','text','以下为高级设置区，不懂请保持默认。\nAdvanced Settings Section. Leave as default if unsure.'),
     node('479','unet_name',QWEN_EDITORIAL_BASE_MODEL),

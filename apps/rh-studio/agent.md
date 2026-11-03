@@ -165,7 +165,7 @@ RH Studio 不是单一的 MinimaxH3 前端，也不是只服务于生视频。
 规则：
 
 - 用户在设置中 **手动选择实例**。
-- 所有支持 RunningHub 实例参数的应用统一使用该选择。
+- 所有支持 RunningHub 实例参数的应用统一使用该选择；未保存手动选择时，可采用应用已确认的默认实例（Qwen写实抓拍默认Plus），不覆盖已保存选择。
 - 选择结果应持久化到浏览器本地。
 - **禁止根据清晰度、时长、模型等参数自动切换实例。**
 - 例如用户选择 1080P 时，也不能自动把实例改成 Ultra。
@@ -649,17 +649,19 @@ Cloudflare Pages 静态资源与 Pages Functions 必须同时承载：
 - `appKey`：`qwen-image-2-1-nsfw`；AI App ID：`2104225323949101057`，类型：多图图片编辑。
 - 图片节点（字段 image）：476、491、477、492、495、494；图 1 必填，其余可空（None）。
 - Prompt：497 / prompt；画幅：13 / aspect_ratio，八种已确认选项。
-- 固定 LoRA：534 / lora_name = NSFW Qwen by TheseAlpacas V2.safetensors，strength_model = 0.4；526 / lora_name = casual_snapshot_realism_qwen21.safetensors，strength_model = 0.8。
+- 固定 LoRA：534 / lora_name = casual_snapshot_realism_qwen21.safetensors，strength_model = 0.4；526 / lora_name = casual_snapshot_realism_qwen21.safetensors，strength_model = 0.8。
 - API 示例固定节点：532/value=2.0000000000000004、521/value=false、527/value=1、515/value=false、525/value=false、528/value=true。
 - 未确认节点的业务意义前不添加对应 UI 控件；LoRA 名称与权重不允许修改。
 - 图片素材使用独立 IndexedDB；任务状态和历史记录复用全局机制。
 
 
-### 14.11 Qwen 2.1 高对比时尚摄影（High-Contrast Editorial Fashion）
+### 14.11 Qwen 2.1 写实抓拍（Snapshot Realism）
 
 - `appKey`: `qwen-image-2-1-editorial`；AI App ID：`2104057271167791105`；类型：纯提示词生图 / 多图参考编辑。
 - 图片输入：Node 476/491/477/492/495/494（image）；0–6 张可选，空节点传 `None`；提示词 497/prompt 必填。
 - 画幅：13/aspect_ratio，8 选项，默认 9:16；13/megapixels 固定 2；527/value 固定 1。
-- 截图底模：479/unet_name = `noctQUncensoredRealismBuiltOn_v40Base_bf16.safetensors`；LoRA1：510/lora_name = `NSFW Qwen by TheseAlpacas V2.safetensors`，strength_model=`0.8000000000000002`；LoRA2：526/lora_name = `QWEN真实时尚摄影高对比高级感大片风格_电商时尚真实高级感摄影大片.safetensors`，strength_model=`0.4`。
-- API 固定值：528/value=false、515/value=false、521/value=false、525/value=false、554/text=原文；484/sampler_name=er_sde、484/scheduler=beta、484/steps=40、484/cfg=3.5。布尔节点含义未核实，不猜测映射。
+- 截图底模：479/unet_name = `noctQUncensoredRealismBuiltOn_v40Base_bf16.safetensors`；LoRA1：510/lora_name = `casual_snapshot_realism_qwen21.safetensors`，strength_model=`0.8`；LoRA2：526/lora_name = `cndamiph_Candid_Amateur_iPhone_Qwen21_v1.safetensors`，strength_model=`0.5`。
+- API 固定值：528/value=true（提示词增强）、515/value=true（加速）、521/value=false、525/value=false、554/text=原文；484/sampler_name=er_sde、484/scheduler=beta、484/steps=40、484/cfg=3.5。2026-11-03按用户截图与RH-Qwen Skill 3.0.1同步。
 - 独立界面、图片缓存及参数存储；共用 RH Studio 全局 API Key、运行实例、图片上传、轮询、预览、历史与故障诊断。
+
+- 本应用默认实例为Plus：未保存全局实例时，切换至本应用使用Plus；用户已保存的全局实例选择始终优先，不自动覆盖或写入本地选择。其他应用保留各自默认实例。应用键、缓存键和已有历史保持兼容。

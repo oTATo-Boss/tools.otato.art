@@ -38,7 +38,7 @@ function renderQwenEditorialIdle() {
   qwenEditorialDownload();
   $('#qwenEditorialResultArea').innerHTML =
     '<div class="empty-state"><div class="empty-mark">＋</div>' +
-    '<strong>准备生成时尚摄影作品</strong><span>输入提示词即可生成，也可以上传参考图。</span></div>';
+    '<strong>准备生成写实抓拍作品</strong><span>输入提示词即可生成，也可以上传参考图。</span></div>';
 }
 function renderQwenEditorialLoading(status, taskId) {
   qwenEditorialStatus(status, taskId ? 'TASK · ' + taskId : 'PROCESSING');
@@ -138,7 +138,7 @@ async function runQwenEditorialTask() {
       renderQwenEditorialLoading(data.status || 'RUNNING', data.taskId);
       qwenEditorialState.poll = setInterval(() => queryQwenEditorialTask(data.taskId), 3000);
     }
-    toast('高对比时尚摄影任务已提交', 'good');
+    toast('写实抓拍任务已提交', 'good');
   } catch (error) {
     renderQwenEditorialFailed(qwenEditorialState.task, error?.message || '运行失败');
     toast(error?.message || '运行失败', 'bad');
